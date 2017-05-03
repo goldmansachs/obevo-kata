@@ -1,0 +1,146 @@
+<!--
+
+    Copyright 2017 Goldman Sachs.
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+-->
+<!--
+The system-config.xml file we use for this data will have comments indicating which fields you need and which you don't.
+-->
+
+<!--
+We start w/ the root dbSystemConfig element.
+
+Required attributes:
+* type - can be one of: DB2, SYBASE_ASE, SYBASE_IQ, H2, HSQL, POSTGRESQL, MSSQL, ORACLE
+
+Notable optional attributes:
+* autoReorgEnabled (defaults to true) - applicable for DB2 only. If true, we automatically execute the reorg statement if we detect that a table needs it. If false, we just print a warning message
+* dataDelimiter (defaults to ,) - for the CSV static data files, this is the delimiter that is used
+* nullToken (defaults to null) - for the CSV static data files, this is the string that indicates a null value in the database. (note - an empty string in the CSV would translate to an empty string in the DB)
+-->
+<dbSystemConfig type="HSQL">
+
+    <!--
+    Next - the schemas element. This is REQUIRED.
+    This must contain at least 1 nested schema element
+    -->
+    <schemas>
+        <!--
+        The schema element only requires the name attribute that defines the "logical" name of your schema, as initially described on the wiki page
+        By default, this would match the actual physical schema that would get deployed to in the database, but the dbEnvironment element
+        below defines a couple of constructs to either append a suffix to the schema, or to override it completely
+
+        There are optional subelements you can specify here in case you'd like to exclude any tables from getting cleaned up during the -cleanFirst command.
+        However, this is a rare usecase, so I won't elaborate here. Please see the xsd for more information
+        -->
+        <schema name="DEMO_SCHEMA" />
+    </schemas>
+
+
+    <!--
+    The groups and users elements are OPTIONAL
+    Currently, Obevo does not use these elements for non-in-memory databases (e.g. DB2, SYBASE_ASE, SYBASE_IQ), as the assumption is that the
+    DB server is already setup with this information
+
+    However, we do use this for the in-memory databases (H2 and HSQL). This is used for when we define permissions using the <permissions> element
+    (see the user guide and the <permissions> section below). Obevo will create these groups and users for H2/HSQL so that the permissions can
+    get the executed.
+
+    Note - if you would like to see this group/user creation feature enabled for the non-in-memory dbs, raise a JIRA request with your use case
+    -->
+    <groups>
+        <group name="DACT_RO" />
+        <group name="DACT_RW" />
+    </groups>
+    <users>
+        <!-- note - passwords are required for users. But this is only a password for the in-memory db. In any case, you should really
+        be granting permissions on groups only, so ideally, you will not need this section -->
+        <user name="SUPERUSER" password="mypass" />
+    </users>
+
+
+    <!--
+    The environments element is REQUIRED
+    This requires at least 1 dbEnvironment element under it
+    -->
+    <environments>
+        <!-- dbEnvironment
+        Required attributes:
+        * name - logical name/alias for your environment. This name is used when you execute the deploy command and in the environment-specific include/exclude functionality
+        * cleanBuildAllowed=whether the -cleanFirst param will be allowed. This is meant as a security check (i.e. so that you don't accidentally run this command against production)
+
+        To define how to connect to your DB, you need one of the following sets of attributes:
+        * Option 1: specify the JDBC URL
+        ** jdbcUrl - the JDBC url that you would use to connect
+        * Option 2: specify the host/port/url, and Obevo will create the url for you based on the typical format for that DBMS
+        ** dbHost - the host name
+        ** dbPort - the port number
+        ** dbServer - the server name; only used for DB2, not needed for ASE/IQ
+        * Option 3: specify the LDAP name that is looked up against the LDAP provider (current default is GS LDAP, i.e. JNDI JDBC)
+        ** dbDataSourceName - the LDAP name, e.g. NYGSDB01
+
+        Optional attributes of note:
+        * dbSchemaSuffix=ideally, in production, your actual schema names will be named as you have it above.
+            But in dev/qa/uat, you may want to support multiple environments on a single server (esp. if you don't have multiple servers floating around)
+            A convention to use is to append a suffix to each schema name to denote that environment. This property indicates that suffix
+            The schemaOverrides element below relates to this
+        * defaultUserId - the default id to use for logins if you prefer not to enter it in for each deployment for this environment, and if you are comfortable putting this in code
+        * defaultPassword - the default password to use for logins if you prefer not to enter it in for each deployment for this environment, and if you are comfortable putting this in code
+        * autoReorgEnabled - similar to the autoReorgEnabled attribute at the system level, except that we can override at an environment level if we choose
+         -->
+        <dbEnvironment name="test"
+            type="DEV"
+            cleanBuildAllowed="true"
+            jdbcUrl="jdbc:hsqldb:hsql://localhost:9092/obevokata"
+            dbSchemaSuffix="">
+            <!--
+            The includeSchemas/excludeSchemas elements can be used if:
+            * You've define many <schema> elements above
+            * And for some environments, you don't want to deploy all of them
+
+            <includeSchemas>SCHEMA1,SCHEMA2</includeSchemas>
+            or
+            <excludeSchemas>SCHEMA1,SCHEMA2</excludeSchemas>
+            -->
+
+            <!--
+            The schemaOverrides element lets you override the physical schema value for a particular schema
+            The default is to do [logicalSchema]+[dbSchemaSuffix]
+            But if for whatever reason you can't abide by this default, you can just override the value with a schemaOverride
+            This is meant more for existing DBs that onboard to Obevo that can't change their schema names
+            New dbs should look to adopt the [logicalSchema]+[dbSchemaSuffix] convention
+            <schemaOverrides>
+                <schemaOverride schema="SCHEMA1" overrideValue="MY_OVERRIDEN_SCHEMA" />
+            </schemaOverrides>
+            -->
+
+            <!--
+            Tokens are there in case you want to tokenize per environment. Just specify the token value in your sqls via ${key}
+            The Kata files show the examples w/ the ${tableAStringFieldName} token - just do a search
+
+            (note - you can choose to do your own tokenization external from Obevo. See the User Guide for more information
+            -->
+            <tokens>
+                <token key="tableAStringFieldName" value="STRING_FIELD" />
+                <token key="unusedToken" value="whatever" />
+            </tokens>
+        </dbEnvironment>
+        <!--
+        Another dbEnvironment if you choose ...
+		<dbEnvironment name="test" type="DEV" cleanBuildAllowed="true" dbHost="myhost.ny.fw.gs.com" dbPort="63500" dbServer="NYABCD01" dbSchemaSuffix="_MYDEV1">
+		</dbEnvironment>
+		-->
+    </environments>
+</dbSystemConfig>

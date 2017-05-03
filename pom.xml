@@ -1,0 +1,375 @@
+<!--
+
+    Copyright 2017 Goldman Sachs.
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.goldmansachs.obevo-kata</groupId>
+    <artifactId>obevo-kata</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    
+    <name>Obevo Kata</name>
+    <description>Obevo Kata is an example project for the Obevo tool.</description>
+    <url>https://github.com/goldmansachs/obevo-kata/</url>
+    <inceptionYear>2017</inceptionYear>
+
+    <organization>
+        <name>Goldman Sachs</name>
+        <url>http://www.goldmansachs.com/</url>
+    </organization>
+
+    <licenses>
+        <license>
+            <name>The Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Shant Stepanian</name>
+            <email>shant.stepanian@gs.com</email>
+            <organization>Goldman Sachs</organization>
+        </developer>
+    </developers>
+
+    <scm>
+        <url>https://github.com/goldmansachs/obevo-kata/</url>
+        <connection>scm:git:https://github.com/goldmansachs/obevo-kata.git</connection>
+        <developerConnection>scm:git:https://github.com/goldmansachs/obevo-kata.git</developerConnection>
+    </scm>
+
+
+    <issueManagement>
+        <system>GitHub</system>
+        <url>https://github.com/goldmansachs/obevo-kata/issues</url>
+    </issueManagement>
+
+
+    <ciManagement>
+        <system>Travis CI</system>
+        <url>https://travis-ci.org/goldmansachs/obevo-kata</url>
+    </ciManagement>
+
+
+    <properties>
+        <obevo.version>6.0.0</obevo.version>
+        <jdk.version>1.7</jdk.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- Use the obevo-bom to have your obevo version numbers declared in one place for your dependencies.
+             Note - this does not apply for plugins -->
+            <dependency>
+                <groupId>com.goldmansachs.obevo</groupId>
+                <artifactId>obevo-bom</artifactId>
+                <version>${obevo.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.goldmansachs.obevo</groupId>
+            <artifactId>obevo-db-unittest-util</artifactId>
+            <version>6.0.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.goldmansachs.obevo</groupId>
+            <artifactId>obevo-db-hsql</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>1.7.18</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <!-- Using apache-rat-plugin to check that the license files are applied correctly. This is used by
+                 many Apache-licensed projects for validation; hence we use it here. -->
+                <groupId>org.apache.rat</groupId>
+                <artifactId>apache-rat-plugin</artifactId>
+                <version>0.12</version>
+                <configuration>
+                    <addLicenseHeaders>false</addLicenseHeaders>
+                    <copyrightMessage>Copyright 2017 Goldman Sachs.</copyrightMessage>
+                    <excludes>
+                        <!-- Standard project files to exclude -->
+                        <exclude>**/.idea/**</exclude>
+                        <exclude>**/.travis.yml</exclude>
+                        <exclude>**/BUILD.md</exclude>
+                        <exclude>**/CHANGELOG.md</exclude>
+                        <exclude>**/CONTRIBUTING.md</exclude>
+                        <exclude>**/CONTRIBUTOR_COVENANT.md</exclude>
+                        <exclude>**/LICENSE.txt</exclude>
+                        <exclude>**/NOTICE.txt</exclude>
+                        <exclude>**/NOTICE.template.txt</exclude>
+                        <exclude>**/README.md</exclude>
+
+                        <!-- Other SP/sql files to exclude that weren't automatically applied by the mycila plugin originally -->
+                        <exclude>**/*.csv</exclude>
+                    </excludes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>run-rat-check</id>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Include this plugin and edit the appropriate names. This is all the Obevo plugins you need in your pom to run tests during your build -->
+            <!-- Note - you can run "mvn test" locally to run this against your validation environment to check that your DDLs are valid -->
+            <plugin>
+                <groupId>com.goldmansachs.obevo</groupId>
+                <artifactId>obevo-maven-plugin</artifactId>
+                <version>${obevo.version}</version>
+                <executions>
+                    <execution>
+                        <id>test-db-module</id>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <configuration>
+                            <env>test</env>
+                            <user>deployer</user>
+                            <password>deploypass</password>
+                            <sourcePath>${basedir}/src/main/database</sourcePath>
+                            <validateBaseline>true</validateBaseline>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+
+            <!-- Standard Maven plugins - you can modify this as needed in your own project these in as needed -->
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.6.1</version>
+
+                <configuration>
+                    <source>${jdk.version}</source>
+                    <target>${jdk.version}</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+
+
+
+
+
+    <!--
+    NOTE - these profiles are not meant to be included in client Obevo projects or used by clients trying out the Obevo example.
+    The profiles are here so that the Obevo maintainers can run this through a build and simulate the steps that users do manually.
+    -->
+    <profiles>
+        <profile>
+            <id>windowsBuild</id>
+            <activation>
+                <os>
+                    <family>Windows</family>
+                </os>
+            </activation>
+            <properties>
+                <script.suffix>bat</script.suffix>
+                <forkDbIntAnt>true</forkDbIntAnt>
+            </properties>
+        </profile>
+        <profile>
+            <id>linuxBuild</id>
+            <activation>
+                <os>
+                    <family>Unix</family>
+                </os>
+            </activation>
+            <properties>
+                <script.suffix>sh</script.suffix>
+                <!-- we will background the process via nohup in the script itself -->
+                <forkDbIntAnt>false</forkDbIntAnt>
+            </properties>
+        </profile>
+        <profile>
+            <!-- This is only here for the continuous build - users of Obevo won't need this -->
+            <id>continuous</id>
+            <properties>
+                <obevo.download.dir>${basedir}/target/obevo-download</obevo.download.dir>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <version>3.0.0</version>
+                        <executions>
+                            <execution>
+                                <id>testme</id>
+                                <goals>
+                                    <goal>unpack</goal>
+                                </goals>
+                                <phase>generate-test-sources</phase>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>com.goldmansachs.obevo</groupId>
+                                            <artifactId>obevo-cli</artifactId>
+                                            <classifier>dist</classifier>
+                                            <type>zip</type>
+                                            <version>${obevo.version}</version>
+                                        </artifactItem>
+                                    </artifactItems>
+                                    <outputDirectory>${obevo.download.dir}</outputDirectory>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>1.8</version>
+                        <executions>
+                            <execution>
+                                <id>restart-db</id>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <phase>generate-test-sources</phase>
+                                <configuration>
+                                    <target>
+                                        <chmod dir="${basedir}/kata-files" perm="755" includes="*.sh" />
+                                        <echo message="Shutting down DB beforehand" />
+                                        <exec executable="${basedir}/kata-files/shutdownDb.${script.suffix}" />
+                                        <delete dir="${basedir}/kata-files/katadb" />
+                                        <echo message="Starting DB" />
+                                        <exec executable="${basedir}/kata-files/startDb.${script.suffix}"
+                                              spawn="${forkDbIntAnt}" />
+                                        <echo message="Initing DB w/ schema values" />
+                                        <exec executable="${basedir}/kata-files/initDb.${script.suffix}" />
+                                        <echo message="Done w/ schema" />
+                                    </target>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>shutdown-db-after-tests</id>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <phase>prepare-package</phase>
+                                <configuration>
+                                    <target>
+                                        <!-- Shutting down afterwards -->
+                                        <exec executable="${basedir}/kata-files/shutdownDb.${script.suffix}" />
+                                    </target>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>run-kata</id>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <!-- this needs to run before the unit test, as the unit test depends on the third kata
+                                 step files to be there -->
+                                <phase>process-test-sources</phase>
+                                <configuration>
+                                    <target>
+                                        <property name="obevo.executable"
+                                                  value="${obevo.download.dir}/bin/deploy.${script.suffix}" />
+
+                                        <property name="deploy.user" value="deployer" />
+                                        <property name="deploy.password" value="deploypass" />
+
+                                        <echo message="Executing step1 of the kata" />
+                                        <delete dir="${basedir}/src/main/database/DEMO_SCHEMA" />
+                                        <copy todir="${basedir}/src/main/database">
+                                            <fileset dir="${basedir}/kata-steps/step1" />
+                                        </copy>
+                                        <exec executable="${obevo.executable}" failonerror="true">
+                                            <arg value="DEPLOY" />
+                                            <arg value="-noPrompt" />
+                                            <arg value="-cleanFirst" />
+                                            <arg value="-deployUserId" />
+                                            <arg value="${deploy.user}" />
+                                            <arg value="-password" />
+                                            <arg value="${deploy.password}" />
+                                            <arg value="-sourcePath" />
+                                            <arg value="src/main/database" />
+                                        </exec>
+
+                                        <echo message="Executing step2 of the kata - no cleanFirst" />
+                                        <delete dir="${basedir}/src/main/database/DEMO_SCHEMA" />
+                                        <copy todir="${basedir}/src/main/database">
+                                            <fileset dir="${basedir}/kata-steps/step2" />
+                                        </copy>
+                                        <exec executable="${obevo.executable}" failonerror="true">
+                                            <arg value="DEPLOY" />
+                                            <arg value="-noPrompt" />
+                                            <arg value="-deployUserId" />
+                                            <arg value="${deploy.user}" />
+                                            <arg value="-password" />
+                                            <arg value="${deploy.password}" />
+                                            <arg value="-sourcePath" />
+                                            <arg value="src/main/database" />
+                                        </exec>
+
+                                        <echo message="Executing step3 of the kata - no cleanFirst" />
+                                        <delete dir="${basedir}/src/main/database/DEMO_SCHEMA" />
+                                        <copy todir="${basedir}/src/main/database">
+                                            <fileset dir="${basedir}/kata-steps/step3" />
+                                        </copy>
+                                        <exec executable="${obevo.executable}" failonerror="true">
+                                            <arg value="DEPLOY" />
+                                            <arg value="-noPrompt" />
+                                            <arg value="-deployUserId" />
+                                            <arg value="${deploy.user}" />
+                                            <arg value="-password" />
+                                            <arg value="${deploy.password}" />
+                                            <arg value="-sourcePath" />
+                                            <arg value="src/main/database" />
+                                        </exec>
+
+                                        <!-- Putting back step 1 to prep for the rest of the test -->
+                                        <delete dir="${basedir}/src/main/database/DEMO_SCHEMA" />
+                                        <copy todir="${basedir}/src/main/database">
+                                            <fileset dir="${basedir}/kata-steps/step1" />
+                                        </copy>
+                                    </target>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+</project>
