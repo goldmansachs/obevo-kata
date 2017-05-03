@@ -87,9 +87,7 @@ Notable optional attributes:
         * Option 2: specify the host/port/url, and Obevo will create the url for you based on the typical format for that DBMS
         ** dbHost - the host name
         ** dbPort - the port number
-        ** dbServer - the server name; only used for DB2, not needed for ASE/IQ
-        * Option 3: specify the LDAP name that is looked up against the LDAP provider (current default is GS LDAP, i.e. JNDI JDBC)
-        ** dbDataSourceName - the LDAP name, e.g. NYGSDB01
+        ** dbServer - the server name; only needed for some DBMS types such as DB2
 
         Optional attributes of note:
         * dbSchemaSuffix=ideally, in production, your actual schema names will be named as you have it above.
@@ -139,7 +137,7 @@ Notable optional attributes:
         </dbEnvironment>
         <!--
         Another dbEnvironment if you choose ...
-		<dbEnvironment name="test" type="DEV" cleanBuildAllowed="true" dbHost="myhost.ny.fw.gs.com" dbPort="63500" dbServer="NYABCD01" dbSchemaSuffix="_MYDEV1">
+		<dbEnvironment name="test" type="DEV" cleanBuildAllowed="true" dbHost="myhost.me.com" dbPort="1234" dbServer="MYSERVER01" dbSchemaSuffix="_MYDEV1">
 		</dbEnvironment>
 		-->
     </environments>
