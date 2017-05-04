@@ -113,41 +113,6 @@
 
     <build>
         <plugins>
-            <plugin>
-                <!-- Using apache-rat-plugin to check that the license files are applied correctly. This is used by
-                 many Apache-licensed projects for validation; hence we use it here. -->
-                <groupId>org.apache.rat</groupId>
-                <artifactId>apache-rat-plugin</artifactId>
-                <version>0.12</version>
-                <configuration>
-                    <addLicenseHeaders>false</addLicenseHeaders>
-                    <copyrightMessage>Copyright 2017 Goldman Sachs.</copyrightMessage>
-                    <excludes>
-                        <!-- Standard project files to exclude -->
-                        <exclude>**/.idea/**</exclude>
-                        <exclude>**/.travis.yml</exclude>
-                        <exclude>**/BUILD.md</exclude>
-                        <exclude>**/CHANGELOG.md</exclude>
-                        <exclude>**/CONTRIBUTING.md</exclude>
-                        <exclude>**/CONTRIBUTOR_COVENANT.md</exclude>
-                        <exclude>**/LICENSE.txt</exclude>
-                        <exclude>**/NOTICE.txt</exclude>
-                        <exclude>**/NOTICE.template.txt</exclude>
-                        <exclude>**/README.md</exclude>
-
-                        <!-- Other SP/sql files to exclude that weren't automatically applied by the mycila plugin originally -->
-                        <exclude>**/*.csv</exclude>
-                    </excludes>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>run-rat-check</id>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
 
             <!-- Include this plugin and edit the appropriate names. This is all the Obevo plugins you need in your pom to run tests during your build -->
             <!-- Note - you can run "mvn test" locally to run this against your validation environment to check that your DDLs are valid -->
@@ -163,8 +128,8 @@
                         </goals>
                         <configuration>
                             <env>test</env>
-                            <user>deployer</user>
-                            <password>deploypass</password>
+                            <user>katadeployer</user>
+                            <password>katadeploypass</password>
                             <sourcePath>${basedir}/src/main/database</sourcePath>
                             <validateBaseline>true</validateBaseline>
                         </configuration>
@@ -226,47 +191,92 @@
             <id>continuous</id>
             <properties>
                 <obevo.download.dir>${basedir}/target/obevo-download</obevo.download.dir>
+                <obevo.tmp.dir>${basedir}/target/obevo-tmp</obevo.tmp.dir>
             </properties>
             <build>
                 <plugins>
                     <plugin>
-                        <artifactId>maven-dependency-plugin</artifactId>
-                        <version>3.0.0</version>
+                        <groupId>org.jasig.maven</groupId>
+                        <artifactId>maven-notice-plugin</artifactId>
+                        <version>1.0.6.1</version>
+                        <configuration>
+                            <noticeTemplate>${basedir}/ci-build/NOTICE.template.txt</noticeTemplate>
+                            <licenseMapping>
+                                <param>${basedir}/ci-build/license-mappings.xml</param>
+                            </licenseMapping>
+                            <fileName>NOTICE.txt</fileName>
+                            <includeChildDependencies>false</includeChildDependencies>
+                        </configuration>
                         <executions>
                             <execution>
-                                <id>testme</id>
+                                <id>check-license</id>
+                                <phase>process-sources</phase>
                                 <goals>
-                                    <goal>unpack</goal>
+                                    <goal>check</goal>
                                 </goals>
-                                <phase>generate-test-sources</phase>
-                                <configuration>
-                                    <artifactItems>
-                                        <artifactItem>
-                                            <groupId>com.goldmansachs.obevo</groupId>
-                                            <artifactId>obevo-cli</artifactId>
-                                            <classifier>dist</classifier>
-                                            <type>zip</type>
-                                            <version>${obevo.version}</version>
-                                        </artifactItem>
-                                    </artifactItems>
-                                    <outputDirectory>${obevo.download.dir}</outputDirectory>
-                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
+                    <plugin>
+                        <!-- Using apache-rat-plugin to check that the license files are applied correctly. This is used by
+                         many Apache-licensed projects for validation; hence we use it here. -->
+                        <groupId>org.apache.rat</groupId>
+                        <artifactId>apache-rat-plugin</artifactId>
+                        <version>0.12</version>
+                        <configuration>
+                            <addLicenseHeaders>false</addLicenseHeaders>
+                            <copyrightMessage>Copyright 2017 Goldman Sachs.</copyrightMessage>
+                            <excludes>
+                                <!-- Standard project files to exclude -->
+                                <exclude>**/.idea/**</exclude>
+                                <exclude>**/.travis.yml</exclude>
+                                <exclude>**/BUILD.md</exclude>
+                                <exclude>**/CHANGELOG.md</exclude>
+                                <exclude>**/CONTRIBUTING.md</exclude>
+                                <exclude>**/CONTRIBUTOR_COVENANT.md</exclude>
+                                <exclude>**/LICENSE.txt</exclude>
+                                <exclude>**/NOTICE.txt</exclude>
+                                <exclude>**/NOTICE.template.txt</exclude>
+                                <exclude>**/README.md</exclude>
+
+                                <!-- Other SP/sql files to exclude that weren't automatically applied by the mycila plugin originally -->
+                                <exclude>**/*.csv</exclude>
+                                <exclude>**/kata-files/katadb/**</exclude>
+                            </excludes>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>run-rat-check</id>
+                                <goals>
+                                    <goal>check</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
                     <plugin>
                         <artifactId>maven-antrun-plugin</artifactId>
                         <version>1.8</version>
                         <executions>
                             <execution>
-                                <id>restart-db</id>
+                                <id>download-obevo-and-restart-db</id>
                                 <goals>
                                     <goal>run</goal>
                                 </goals>
                                 <phase>generate-test-sources</phase>
                                 <configuration>
                                     <target>
+                                        <echo message="Downloading and unzipping Obevo" />
+                                        <mkdir dir="${obevo.tmp.dir}" />
+                                        <get src="https://github.com/goldmansachs/obevo/releases/download/${obevo.version}/obevo-cli-${obevo.version}-dist.zip"
+                                             dest="${obevo.tmp.dir}/dist.zip"
+                                             verbose="true"
+                                             usetimestamp="true"/>
+                                        <unzip src="${obevo.tmp.dir}/dist.zip"
+                                               dest="${obevo.download.dir}" />
+                                        <chmod dir="${obevo.download.dir}/bin" perm="755" includes="*.sh" />
                                         <chmod dir="${basedir}/kata-files" perm="755" includes="*.sh" />
+
                                         <echo message="Shutting down DB beforehand" />
                                         <exec executable="${basedir}/kata-files/shutdownDb.${script.suffix}" />
                                         <delete dir="${basedir}/kata-files/katadb" />
@@ -275,6 +285,7 @@
                                               spawn="${forkDbIntAnt}" />
                                         <echo message="Initing DB w/ schema values" />
                                         <exec executable="${basedir}/kata-files/initDb.${script.suffix}" />
+
                                         <echo message="Done w/ schema" />
                                     </target>
                                 </configuration>
@@ -287,7 +298,7 @@
                                 <phase>prepare-package</phase>
                                 <configuration>
                                     <target>
-                                        <!-- Shutting down afterwards -->
+                                        <echo message="Shutting down DB afterward" />
                                         <exec executable="${basedir}/kata-files/shutdownDb.${script.suffix}" />
                                     </target>
                                 </configuration>
@@ -305,8 +316,8 @@
                                         <property name="obevo.executable"
                                                   value="${obevo.download.dir}/bin/deploy.${script.suffix}" />
 
-                                        <property name="deploy.user" value="deployer" />
-                                        <property name="deploy.password" value="deploypass" />
+                                        <property name="deploy.user" value="katadeployer" />
+                                        <property name="deploy.password" value="katadeploypass" />
 
                                         <echo message="Executing step1 of the kata" />
                                         <delete dir="${basedir}/src/main/database/DEMO_SCHEMA" />
