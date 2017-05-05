@@ -16,7 +16,12 @@
 
 -->
 
-# Kata Setup
+Kata Overview:
+* Part A: Kata Setup
+* Part B: File Overview
+* Part C: Kata Exercise Steps
+
+# Part A: Kata Setup
 
 #### 1) Download the application
 Download the binary from either:
@@ -76,7 +81,7 @@ In this kata, we also demonstrate how to use Obevo in a unit test and to run a t
 For that, you will need Maven, which you can download from [here](https://archive.apache.org/dist/maven/maven-3/3.5.0/binaries/apache-maven-3.5.0-bin.zip)
 
 
-# Kata Folder Structure Overview
+# Part B: File Overview
 Let's review the files in your project.
 
 Files you should ignore:
@@ -91,7 +96,7 @@ Files you will use for the kata:
 * src/test/java: We show an example here of how to use Obevo in your unit tests.
 
 
-# Kata Steps
+# Part C: Kata Exercise Steps
 
 ## Setup the test HSQLDB database
 

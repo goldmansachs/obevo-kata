@@ -1,4 +1,4 @@
-# Obevo Kata
+# Welcome to the Obevo Kata
 
 This is an example project for the [Obevo](https://github.com/goldmansachs/obevo) tool.
 
