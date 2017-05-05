@@ -19,13 +19,17 @@
 # Kata Setup
 
 #### 1) Download the application
-Either find the binary file link from the [Obevo Release page](https://github.com/goldmansachs/obevo/releases/latest)
-
-Or use [this link](https://github.com/goldmansachs/obevo/releases/download/6.0.0/obevo-cli-6.0.0-dist.zip) directly.
+Either:
+* Find the binary file link from the [Obevo Release page](https://github.com/goldmansachs/obevo/releases/latest)
+* Or use [this link](https://github.com/goldmansachs/obevo/releases/download/6.0.0/obevo-cli-6.0.0-dist.zip) directly.
 
 
 #### 2) Checkout the kata code
-From the [Kata Github project](/)
+From the [Kata Github project](https://github.com/goldmansachs/obevo-kata)
+
+```
+git clone https://github.com/goldmansachs/obevo-kata.git
+```
 
 
 #### 3) Setup the environment variables for the kata
@@ -40,7 +44,16 @@ SET OBEVO_HOME=H:\obevo
 SET KATA_HOME=H:\obevo-checkout\database-kata
 ```
 
-The scripts will be run at %OBEVO_HOME%\bin
+```
+@REM In Linux/Bash
+export OBEVO_HOME=H:\obevo
+export KATA_HOME=H:\obevo-checkout\database-kata
+```
+
+
+The scripts will be run at %OBEVO_HOME%\bin (Windows) a.k.a. $OBEVO_HOME/bin (Linux/Bash)
+
+For the rest of this kata, we will use the Windows convention when writing the commands.
 
 
 #### 4) Run the initial setup command for your files
@@ -48,7 +61,7 @@ This step would simulate you creating a database w/ tables, views, data, etc.
             
 ```
 cd %KATA_HOME%
-kata-files\kata-step1.bat
+kata-db-files\kata-step1.bat
 ```
 
 Your setup should look like this:
@@ -57,27 +70,41 @@ Your setup should look like this:
 
 
 # Kata Folder Structure Overview
-Let's review
+Let's review the files in your project.
+
+First, the files you can ignore:
+* /internal/:  files for the Obevo developers to test out the kata in the continuous build.
+* LICENSE.txt, NOTICE.txt: files required for Apache licensed projects.
+* kata.md, README.md: documentation files for this kata
+
+Files for the kata:
+
+* kata-db-files/: We will setup a local HSQLDB instance for this kata. The binaries and scripts for that are in this folder
+* src/main/database/: Your DB system will be defined in here for the kata. The kata checkout starts with only system-config.xml. You will add more files from...
+* kata-steps/: This folder has the example DB files to use in your kata. You can hand-write them yourself into src/main/database, but we provide scripts in this folder to make it easier to move through the kata.
+* src/test/java: We show an example here of how to use Obevo in your unit tests.
+
+#### (Optional) Setup Maven to try out the JUnit test and Maven plugin
+(If you are already familiar with Maven setup, you can ignore this section)
+
+In this kata, we also demonstrate how to use Obevo in a unit test and to run a test deployment as part of your build.
+
+For that, you will need Maven, which you can download from [here](https://archive.apache.org/dist/maven/maven-3/3.5.0/binaries/apache-maven-3.5.0-bin.zip)
 
 
-
-#### (Optional) Confirm your Maven settings
-In case you want to give the Maven plugin a try, ensure that your Maven settings.xml file has the &lt;pluginRepositories&gt;
-section defined. Otherwise, the maven plugin calls won't work
-            
 # Kata Steps
 
 ## Setup the test HSQLDB database
 
-First, to demo the tool, we need a database to try stuff on.
+First, to demo the tool, we need a database against which to run our scripts.
 
-While you are free to try this against your own DB2, IQ, or ASE database, we provide an HSQL demo here so that you can get this setup quickly without any external dependencies
+While you are free to try this against your own database, we provide an HSQL demo here so that you can get this setup quickly without any external dependencies.
 
 
 Step 1: start the HSQLDB server. This will open up the server on port 9092
 ```
 cd %KATA_HOME%
-kata-files\startDb.bat
+kata-db-files\startDb.bat
 ```
 
 Step 2: setup the environment (e.g. schemas, users). This will also create a user with id=katadeployer and
@@ -85,11 +112,11 @@ password=katadeploypass for you to use
 
 ```
 cd %KATA_HOME%
-kata-files\initDb.bat
+kata-db-files\initDb.bat
 ```
 
 In case you need to stop the DB:
-```cd %KATA_HOME% kata-files\shutdownDb.bat```
+```cd %KATA_HOME% kata-db-files\shutdownDb.bat```
 
 ### Viewing the DB:
 To view the DB state, use any DB viewer tool that you'd like
@@ -139,7 +166,7 @@ Now we change some files (run the kata-step2.bat file to change the files. norma
 
 Do a deployment again - same command as before
 ```
-kata-files\kata-step2.bat
+kata-db-files\kata-step2.bat
 %OBEVO_HOME%\bin\deploy.bat DEPLOY -sourcePath src/main/database -env test
 ```
 
@@ -148,7 +175,7 @@ these much, but they are good to know about). More on these below
 
 Now try one more set of changes
 ```
-kata-files\kata-step3.bat
+kata-db-files\kata-step3.bat
 %OBEVO_HOME%\bin\deploy.bat DEPLOY -sourcePath src/main/database -env test
 ```
 

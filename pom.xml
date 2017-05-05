@@ -241,7 +241,7 @@
 
                                 <!-- Other SP/sql files to exclude that weren't automatically applied by the mycila plugin originally -->
                                 <exclude>**/*.csv</exclude>
-                                <exclude>**/kata-files/katadb/**</exclude>
+                                <exclude>**/kata-db-files/katadb/**</exclude>
                             </excludes>
                         </configuration>
                         <executions>
@@ -275,16 +275,16 @@
                                         <unzip src="${obevo.tmp.dir}/dist.zip"
                                                dest="${obevo.download.dir}" />
                                         <chmod dir="${obevo.download.dir}/bin" perm="755" includes="*.sh" />
-                                        <chmod dir="${basedir}/kata-files" perm="755" includes="*.sh" />
+                                        <chmod dir="${basedir}/kata-db-files" perm="755" includes="*.sh" />
 
                                         <echo message="Shutting down DB beforehand" />
-                                        <exec executable="${basedir}/kata-files/shutdownDb.${script.suffix}" />
-                                        <delete dir="${basedir}/kata-files/katadb" />
+                                        <exec executable="${basedir}/kata-db-files/shutdownDb.${script.suffix}" />
+                                        <delete dir="${basedir}/kata-db-files/katadb" />
                                         <echo message="Starting DB" />
-                                        <exec executable="${basedir}/kata-files/startDb.${script.suffix}"
+                                        <exec executable="${basedir}/kata-db-files/startDb.${script.suffix}"
                                               spawn="${forkDbIntAnt}" />
                                         <echo message="Initing DB w/ schema values" />
-                                        <exec executable="${basedir}/kata-files/initDb.${script.suffix}" />
+                                        <exec executable="${basedir}/kata-db-files/initDb.${script.suffix}" />
 
                                         <echo message="Done w/ schema" />
                                     </target>
@@ -299,7 +299,7 @@
                                 <configuration>
                                     <target>
                                         <echo message="Shutting down DB afterward" />
-                                        <exec executable="${basedir}/kata-files/shutdownDb.${script.suffix}" />
+                                        <exec executable="${basedir}/kata-db-files/shutdownDb.${script.suffix}" />
                                     </target>
                                 </configuration>
                             </execution>
