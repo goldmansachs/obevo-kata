@@ -73,7 +73,12 @@ Your setup should look like this:
 ![](db-kata-file-setup.jpg)
 
 
-#### 5) (Optional) Setup Maven to try out the JUnit test and Maven plugin
+#### 5) Get the JDK (Java 7 minimum)
+
+Link to [JDK downloads](http://www.oracle.com/technetwork/java/javase/overview/java8-2100321.html)
+
+
+#### 6) (Optional) Setup Maven to try out the JUnit test and Maven plugin
 (If you are already familiar with Maven setup, you can ignore this section)
 
 In this kata, we also demonstrate how to use Obevo in a unit test and to run a test deployment as part of your build.
