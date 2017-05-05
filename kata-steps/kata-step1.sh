@@ -17,4 +17,4 @@
 
 ROOTDIR=`dirname $0`/..
 rm -rf /q /s $ROOTDIR/src/main/database/DEMO_SCHEMA
-cp -rp $ROOTDIR/kata-steps/step1 $ROOTDIR/src/main/database
+cp -rp $ROOTDIR/kata-steps/step1/* $ROOTDIR/src/main/database
