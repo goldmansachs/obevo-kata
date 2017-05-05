@@ -141,7 +141,7 @@ These command starts the deployment:
 
  Windows: ```%OBEVO_HOME%\bin\deploy.bat DEPLOY -sourcePath %KATA_HOME%/src/main/database -env test```
 
- Linux: ```$OBEVO_HOME/bin/deploy.sh DEPLOY -sourcePath src/main/database -env test```
+ Linux: ```$OBEVO_HOME/bin/deploy.sh DEPLOY -sourcePath $KATA_HOME/src/main/database -env test```
 
 Enter "katadeployer" as the user id (without the quotes), and &quot;katadeploypass&quot; as the
 password
@@ -153,9 +153,9 @@ Now, run the deployment again using the following command. The tool will detect 
 Note that the deployment command is the same as before - that's the point! Reduce the work on your
 developers and deployers; let the tool figure out the difference
 
- Windows: ```%OBEVO_HOME%\bin\deploy.bat DEPLOY -sourcePath src/main/database -env test```
+ Windows: ```%OBEVO_HOME%\bin\deploy.bat DEPLOY -sourcePath %KATA_HOME%/src/main/database -env test```
 
- Linux: ```$OBEVO_HOME/bin/deploy.sh DEPLOY -sourcePath src/main/database -env test```
+ Linux: ```$OBEVO_HOME/bin/deploy.sh DEPLOY -sourcePath $KATA_HOME/src/main/database -env test```
 
 Fyi, here are some other command line arguments that may be of use (these are all optional):
 * -noPrompt: bypasses all command-line prompts (e.g. hitting &quot;Y&quot; to confirm)
@@ -179,7 +179,7 @@ Do a deployment again - same command as before
 * Linux:
 ```
 $KATA_HOME/kata-db-files/kata-step2.sh
-$OBEVO_HOME/bin/deploy.sh DEPLOY -sourcePath %KATA_HOME%/src/main/database -env test
+$OBEVO_HOME/bin/deploy.sh DEPLOY -sourcePath $KATA_HOME/src/main/database -env test
 ```
 
 These changes feature a couple of the more advanced features of Obevo (you may not need to use
@@ -196,7 +196,7 @@ Now try one more set of changes
 * Linux:
 ```
 $KATA_HOME/kata-db-files/kata-step3.sh
-$OBEVO_HOME/bin/deploy.sh DEPLOY -sourcePath %KATA_HOME%/src/main/database -env test
+$OBEVO_HOME/bin/deploy.sh DEPLOY -sourcePath $KATA_HOME/src/main/database -env test
 ```
 
 In step 3, you may notice a couple extra files that have the .baseline. word in them. The next section describes what this does
