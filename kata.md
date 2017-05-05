@@ -1,4 +1,3 @@
-Kata!
 <!--
 
     Copyright 2017 Goldman Sachs.
@@ -19,26 +18,33 @@ Kata!
 
 # Kata Setup
 
-#### Download the binary
-See the instructions in the "Setup" page (see menu to left))
+#### 1) Download the application
+Either find the binary file link from the [Obevo Release page](https://github.com/goldmansachs/obevo/releases/latest)
 
-#### Checkout the kata code
-From the [Kata Github project](${kata.product.url})
+Or use [this link](https://github.com/goldmansachs/obevo/releases/download/6.0.0/obevo-cli-6.0.0-dist.zip) directly.
 
-#### Setup the environment variables for the kata
-You can set these variables for your convenience:
+
+#### 2) Checkout the kata code
+From the [Kata Github project](/)
+
+
+#### 3) Setup the environment variables for the kata
+(Not technically required for Obevo's normal execution, but highly recommended for convenience for these exercises)
+
 * OBEVO_HOME for the location of the binary that you unzipped
 * KATA_HOME for the location of the kata project that you checked out
 
 ```
+@REM In Windows
 SET OBEVO_HOME=H:\obevo
 SET KATA_HOME=H:\obevo-checkout\database-kata
 ```
 
-The scripts will be run at %OBEVO_HOME%/bin
+The scripts will be run at %OBEVO_HOME%\bin
 
-#### Setup the example database files
-First, get the files setup. This step would simulate you creating a database w/ tables, views, data, etc.
+
+#### 4) Run the initial setup command for your files
+This step would simulate you creating a database w/ tables, views, data, etc.
             
 ```
 cd %KATA_HOME%
@@ -47,7 +53,13 @@ kata-files\kata-step1.bat
 
 Your setup should look like this:
 
-![](images/db-kata-file-setup.jpg)
+![](internal/db-kata-file-setup.jpg)
+
+
+# Kata Folder Structure Overview
+Let's review
+
+
 
 #### (Optional) Confirm your Maven settings
 In case you want to give the Maven plugin a try, ensure that your Maven settings.xml file has the &lt;pluginRepositories&gt;
@@ -93,8 +105,8 @@ Once you enter that, you can browse your local server.
 ## Kata Step 1 Deployment - Demonstrating a new deployment
 
 These command starts the deployment:
-<ul>
-* -sourcePath corresponds to the root folder of your DB files</li>
+
+* -sourcePath corresponds to the root folder of your DB files
 * -env corresponds to the environment name defined in your system-config.xml file that you want to deploy
  * If your system-config.xml only has 1 environment in it, then you don't need the -env parameter. This option is used by some teams due to how they tokenize their code
  * Note that multiple environments can be deployed in one shot if you choose by: specifing the list of envs in a
@@ -148,7 +160,6 @@ In the kata step3, we demonstrate the baseline feature. This is optional and is 
 DB deployments, but is used to help validate your schema.
 
 Here is the use case:
-                <ul>
 * Table changes are typically executed as ALTER statements. Over the lifetime of a table, many alters get applied and would result in a full table DDL definition
 * But every time you try to make an ALTER change, you implicitly want your table to look like the &quot;full table DDL&quot; that you have in mind
  * Some teams will incorporate this into their db script maintenance, e.g. maintaining a &quot;baseline&quot; ddl
