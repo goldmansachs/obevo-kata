@@ -34,6 +34,9 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
+/**
+ * Remember to start your DB using the kata-db-files/startDb.sh or startDb.bat script before running ths JUnit test.
+ */
 public class ExampleDbUnitTest {
     private DataSource ds;
 
@@ -60,9 +63,7 @@ public class ExampleDbUnitTest {
 
     @Test
     public void exampleTest() throws Exception {
-        // load your data via dbunit
-        // note: the loadData call currently requires that we qualify the table name w/ the schema name in the CSV
-        // (we can look to make this configurable one day if we get enough requests)
+        // load your data
         loadData(ds);
 
         // Now run your test once the setup is done
