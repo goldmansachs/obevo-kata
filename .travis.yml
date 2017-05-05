@@ -4,4 +4,4 @@ jdk: oraclejdk7
 before_install:
   - export MAVEN_OPTS="-Dmaven.repo.local=$HOME/.m2/repository -Xmx2g -Dorg.slf4j.simpleLogger.showDateTime=true -Dorg.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss:SSS"
 
-install: mvn -P continuousBuild,linuxBuild clean verify
+install: mvn -P linuxBuild clean verify
