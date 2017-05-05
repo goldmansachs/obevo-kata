@@ -264,19 +264,6 @@
                                 </configuration>
                             </execution>
                             <execution>
-                                <id>shutdown-db-after-tests</id>
-                                <goals>
-                                    <goal>run</goal>
-                                </goals>
-                                <phase>prepare-package</phase>
-                                <configuration>
-                                    <target>
-                                        <echo message="Shutting down DB afterward" />
-                                        <exec executable="${basedir}/kata-db-files/shutdownDb.${script.suffix}" />
-                                    </target>
-                                </configuration>
-                            </execution>
-                            <execution>
                                 <id>run-kata</id>
                                 <goals>
                                     <goal>run</goal>
@@ -346,6 +333,19 @@
                                         <copy todir="${basedir}/src/main/database">
                                             <fileset dir="${basedir}/kata-steps/step1" />
                                         </copy>
+                                    </target>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>shutdown-db-after-tests</id>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <phase>prepare-package</phase>
+                                <configuration>
+                                    <target>
+                                        <echo message="Shutting down DB afterward" />
+                                        <exec executable="${basedir}/kata-db-files/shutdownDb.${script.suffix}" />
                                     </target>
                                 </configuration>
                             </execution>
