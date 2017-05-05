@@ -39,32 +39,6 @@
         </license>
     </licenses>
 
-    <developers>
-        <developer>
-            <name>Shant Stepanian</name>
-            <email>shant.stepanian@gs.com</email>
-            <organization>Goldman Sachs</organization>
-        </developer>
-    </developers>
-
-    <scm>
-        <url>https://github.com/goldmansachs/obevo-kata/</url>
-        <connection>scm:git:https://github.com/goldmansachs/obevo-kata.git</connection>
-        <developerConnection>scm:git:https://github.com/goldmansachs/obevo-kata.git</developerConnection>
-    </scm>
-
-
-    <issueManagement>
-        <system>GitHub</system>
-        <url>https://github.com/goldmansachs/obevo-kata/issues</url>
-    </issueManagement>
-
-
-    <ciManagement>
-        <system>Travis CI</system>
-        <url>https://travis-ci.org/goldmansachs/obevo-kata</url>
-    </ciManagement>
-
 
     <properties>
         <obevo.version>6.0.0</obevo.version>
@@ -154,8 +128,6 @@
 
 
 
-
-
     <!--
     NOTE - these profiles are not meant to be included in client Obevo projects or used by clients trying out the Obevo example.
     The profiles are here so that the Obevo maintainers can run this through a build and simulate the steps that users do manually.
@@ -188,7 +160,8 @@
         </profile>
         <profile>
             <!-- This is only here for the continuous build - users of Obevo won't need this -->
-            <id>continuous</id>
+            <id>continuousBuild</id>
+
             <properties>
                 <obevo.download.dir>${basedir}/target/obevo-download</obevo.download.dir>
                 <obevo.tmp.dir>${basedir}/target/obevo-tmp</obevo.tmp.dir>

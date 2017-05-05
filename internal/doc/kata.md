@@ -50,7 +50,7 @@ SET KATA_HOME=H:\obevo-checkout\database-kata
 ```
 
 ```
-@REM In Linux/Bash
+# In Linux/Bash
 export OBEVO_HOME=/home/myuser/obevo
 export KATA_HOME=/home/myuser/obevo-checkout/database-kata
 ```
@@ -85,16 +85,20 @@ For that, you will need Maven, which you can download from [here](https://archiv
 Let's review the files in your project.
 
 Files you should ignore:
-* /internal/:  files for the Obevo developers to test out the kata in the continuous build.
-* LICENSE.txt, NOTICE.txt: files required for Apache licensed projects.
+* /internal/:  files for the Obevo developers to test out the kata in the continuous build
+* LICENSE.txt, NOTICE.txt: files required for Apache licensed projects
 * kata.md, README.md: documentation files for this kata
+* .travis.yml: meant only for the Kata's own continuous build that the Obevo team maintains
 
 Files you will use for the kata:
 * kata-db-files/: We will setup a local HSQLDB instance for this kata. The binaries and scripts for that are in this folder
 * src/main/database/: Your DB system will be defined in here for the kata. The kata checkout starts with only system-config.xml. You will add more files from...
 * kata-steps/: This folder has the example DB files to use in your kata. You can hand-write them yourself into src/main/database, but we provide scripts in this folder to make it easier to move through the kata.
 * src/test/java: We show an example here of how to use Obevo in your unit tests.
+* pom.xml: standard pom for your project
 
+You can use the kata files as templates for your own project; though for the pom.xml, you should ignore the &lt;profiles&gt;
+section, as that is meant only for the Kata's own continuous build that the Obevo team maintains.
 
 # Part C: Kata Exercise Steps
 
@@ -148,7 +152,7 @@ These command starts the deployment:
 
  Linux: ```$OBEVO_HOME/bin/deploy.sh DEPLOY -sourcePath $KATA_HOME/src/main/database -env test```
 
-Enter "katadeployer" as the user id (without the quotes), and &quot;katadeploypass&quot; as the
+Enter "katadeployer" as the user id (without the quotes), and "katadeploypass" as the
 password
 
 Follow the prompts to complete the deployment
@@ -164,7 +168,7 @@ developers and deployers; let the tool figure out the difference
  Linux: ```$OBEVO_HOME/bin/deploy.sh DEPLOY -sourcePath $KATA_HOME/src/main/database -env test -deployUserId katadeployer -password katadeploypass```
 
 Fyi, here are some other command line arguments that may be of use (these are all optional):
-* -noPrompt: bypasses all command-line prompts (e.g. hitting &quot;Y&quot; to confirm)
+* -noPrompt: bypasses all command-line prompts (e.g. hitting "Y" to confirm)
 * -cleanFirst: drops all the objects in your schemas prior to deployment. Useful for
     dev/regression-test environments; obviously, not recommended for uat or prod\! You can prevent
     this in certain environments via the cleanBuildAllowed parameter in the system-config.xml file;
@@ -172,7 +176,7 @@ Fyi, here are some other command line arguments that may be of use (these are al
 
 ## Kata Steps 2 and 3 - Demonstrating changes
 
-Now we change some files (run the kata-step2.bat file to change the files. normally, you would just change in place)
+Now we change some files (run the kata-step2.bat file to change the files; normally, you would just change in place)
 
 Do a deployment again - same command as before
 
@@ -189,9 +193,9 @@ $OBEVO_HOME/bin/deploy.sh DEPLOY -sourcePath $KATA_HOME/src/main/database -env t
 ```
 
 These changes feature a couple of the more advanced features of Obevo (you may not need to use
-these much, but they are good to know about). More on these below
+these much, but they are good to know about). For more info, see the [Kata 2 Details](kata-step2.md)
 
-Now try one more set of changes
+Now try one more set of changes. For more info, see the [Kata 3 Details](kata-step3.md)
 
 * Windows:
 ```
@@ -214,33 +218,37 @@ DB deployments, but is used to help validate your schema.
 
 Here is the use case:
 * Table changes are typically executed as ALTER statements. Over the lifetime of a table, many alters get applied and would result in a full table DDL definition
-* But every time you try to make an ALTER change, you implicitly want your table to look like the &quot;full table DDL&quot; that you have in mind
- * Some teams will incorporate this into their db script maintenance, e.g. maintaining a &quot;baseline&quot; ddl
-* But there has not been a standard way to verify that the ALTERs will actually tie up to the &quot;baseline&quot; ddl.
+* But every time you try to make an ALTER change, you implicitly want your table to look like the "full table DDL" that you have in mind
+ * Some teams will incorporate this into their db script maintenance, e.g. maintaining a "baseline" ddl
+* But there has not been a standard way to verify that the ALTERs will actually tie up to the "baseline" ddl.
 * Can we do this?
 
 In Obevo, we give this a shot! To do this:
 * Add a *.baseline.sql file for each table object file that you maintain
- * The extension does not matter; it can be *.baseline.ddl too. The only requirement is that the &quot;word&quot; before the extension is &quot;baseline&quot;
-* This file should have the SQLs for a full DDL. No //// CHANGE stuff, no //// METADATA stuff, just SQLs that are split by GOs
+ * The extension does not matter; it can be *.baseline.ddl too. The only requirement is that the "word" before the extension is "baseline"
+* This file should have the SQLs for a full DDL. No //// CHANGE sections, no //// METADATA sections, just SQLs that are split by GOs
 * These files are ignored when you do a regular deployment
-* But these are used when you do a &quot;validateBaseline&quot; deployment via the Maven plugin (more on the plugin below). What this will do:
+* But these are used when you do a "validateBaseline" deployment via the Maven plugin (more on the plugin below). What this will do:
  * Executes a regular clean and deploy against the environment that you choose
  * Then executes another clean and deploy against that environment, but this time, if it sees
-any baseline files, it will replace the &quot;regular&quot; file. (it will inherit any ////
+any baseline files, it will replace the "regular" file. (it will inherit any ////
 METADATA entries associated w/ the regular file)
  * The tool then compares the table DDLs from the first deployment to the second deployment.
-(This is aided greatly by the [http://schemacrawler.sourceforge.net/] utility. If it finds
+(aided by the [SchemaCrawler library](http://schemacrawler.sourceforge.net/) utility. If it finds
 any differences, it will fail the maven goal
 
 Note that this can also potentially fit in well if you generate your DDLs from another source, e.g.
-Hibernate or Reladomo. So you can have Hibernate or Mithra generate the baseline DDLs, and we can then
-truly
-verify that the DDLs from Hibernate/Mithra tie to your alters!
-* We do have a utility available to do this for Hibernate - please contact the product team via Github for more info (haven't had the chance to put up this documentation yet)
+Hibernate or Reladomo. i.e.
+* Use Hibernate or Reladomo generate the baseline DDLs
+* Then verify that those baseline DDLs match your alters
+
+For more information, see the documentation on [ORM DDL Generation](https://goldmansachs.github.io/obevo/orm-integration.html)
+and [Baseline DDL Validation](https://goldmansachs.github.io/obevo/baseline-validation.html).
 
 In the kata example, we have left in a break on-purpose in TABLE_B so that you can see these feature
 first-hand (the error looks like the snippet below). Give it a shot to fix this (i.e. add an ALTER
 command on TABLE_B to get it in line with the baseline)
 
-```[ERROR] ObjectCompareBreak{object=obevoKATA.DEMO_SCHEMA.TABLE_B.NEW_COLUMN1, clazz=interface schemacrawler.schema.Column, objectCompareBreakSide=RIGHT}```
+```
+[ERROR] ObjectCompareBreak{object=obevoKATA.DEMO_SCHEMA.TABLE_B.NEW_COLUMN1, clazz=interface schemacrawler.schema.Column, objectCompareBreakSide=RIGHT}
+```
