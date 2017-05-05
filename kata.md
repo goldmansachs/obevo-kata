@@ -59,9 +59,9 @@ For the rest of this kata, we will use the Windows convention when writing the c
 #### 4) Run the initial setup command for your files
 This step would simulate you creating a database w/ tables, views, data, etc.
 
- Windows: ```%KATA_HOME%\kata-db-files\kata-step1.bat```
+ Windows: ```%KATA_HOME%\kata-steps\kata-step1.bat```
 
- Linux: ```$KATA_HOME/kata-db-files/kata-step1.sh```
+ Linux: ```$KATA_HOME/kata-steps/kata-step1.sh```
 
 Your setup should look like this:
 
