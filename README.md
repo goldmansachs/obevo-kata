@@ -1,10 +1,5 @@
-Example project for the [Obevo](https://github.com/goldmansachs/obevo) tool
+# Obevo Kata
 
-Under development
+This is an example project for the [Obevo](https://github.com/goldmansachs/obevo) tool.
 
-ETA is May 26, 2017
-
-[kata](kata.md)
-
-
-[link](kata-files/kata-step2-readme.md)
+Visit the [kata link](internal/doc/kata.md) to setup and try out Obevo on a sample database!

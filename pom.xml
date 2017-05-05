@@ -200,9 +200,9 @@
                         <artifactId>maven-notice-plugin</artifactId>
                         <version>1.0.6.1</version>
                         <configuration>
-                            <noticeTemplate>${basedir}/ci-build/NOTICE.template.txt</noticeTemplate>
+                            <noticeTemplate>${basedir}/internal/build/NOTICE.template.txt</noticeTemplate>
                             <licenseMapping>
-                                <param>${basedir}/ci-build/license-mappings.xml</param>
+                                <param>${basedir}/internal/build/license-mappings.xml</param>
                             </licenseMapping>
                             <fileName>NOTICE.txt</fileName>
                             <includeChildDependencies>false</includeChildDependencies>
