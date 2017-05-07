@@ -6,4 +6,4 @@ before_install:
 
 # Travis seems to be running Ant scripts using a JDK version < 7; no chance to look into it yet, so we will ignore for now.
 install:
-  -true
+  - true
