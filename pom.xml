@@ -64,29 +64,29 @@
             <groupId>com.goldmansachs.obevo</groupId>
             <artifactId>obevo-db-unittest-util</artifactId>
             <version>6.0.0</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.goldmansachs.obevo</groupId>
             <artifactId>obevo-db-hsql</artifactId>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.11</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
             <version>1.7.18</version>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 
     <build>
         <plugins>
+            <plugin>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.10</version>
+            </plugin>
 
             <!-- Include this plugin and edit the appropriate names. This is all the Obevo plugins you need in your pom to run tests during your build -->
             <!-- Note - you can run "mvn test" locally to run this against your validation environment to check that your DDLs are valid -->
