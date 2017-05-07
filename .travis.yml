@@ -8,5 +8,7 @@ before_install:
 install:
   -
 
-CMD="mvn -P linuxBuild -D skipTests clean verify"
-
+env:
+  regular:
+    - DESC="regularBuild"
+    - CMD="mvn -P linuxBuild -D skipTests clean verify"
