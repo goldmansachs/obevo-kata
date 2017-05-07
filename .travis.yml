@@ -9,3 +9,4 @@ install:
   -
 
 CMD="mvn -P linuxBuild -D skipTests clean verify"
+
