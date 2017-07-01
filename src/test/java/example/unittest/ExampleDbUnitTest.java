@@ -35,7 +35,7 @@ import java.util.Map;
 import static org.junit.Assert.assertEquals;
 
 /**
- * Remember to start your DB using the kata-db-files/startDb.sh or startDb.bat script before running ths JUnit test.
+ * Remember to start your DB using the kata-files/setup/startDb.sh or startDb.bat script before running ths JUnit test.
  */
 public class ExampleDbUnitTest {
     private DataSource ds;
