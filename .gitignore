@@ -16,3 +16,5 @@ buildNumber.properties
 .idea
 obevo-kata.iml
 src/main/database/DEMO_SCHEMA
+nohup.out
+**/nohup.out

@@ -41,8 +41,11 @@
 
 
     <properties>
-        <obevo.version>6.0.0</obevo.version>
+        <obevo.version>6.2.0</obevo.version>
         <jdk.version>1.7</jdk.version>
+
+        <kata.deployUser>katadeployer</kata.deployUser>
+        <kata.deployPassword>katadeploypass</kata.deployPassword>
     </properties>
 
     <dependencyManagement>
@@ -63,7 +66,6 @@
         <dependency>
             <groupId>com.goldmansachs.obevo</groupId>
             <artifactId>obevo-db-unittest-util</artifactId>
-            <version>6.0.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -102,8 +104,8 @@
                         </goals>
                         <configuration>
                             <env>test</env>
-                            <user>katadeployer</user>
-                            <password>katadeploypass</password>
+                            <user>${kata.deployUser}</user>
+                            <password>${kata.deployPassword}</password>
                             <sourcePath>${basedir}/src/main/database</sourcePath>
                             <validateBaseline>true</validateBaseline>
                         </configuration>
@@ -163,11 +165,157 @@
             <id>continuousBuild</id>
 
             <properties>
+                <obevo.download.url>https://github.com/goldmansachs/obevo/releases/download/${obevo.version}/obevo-cli-${obevo.version}-dist.zip</obevo.download.url>
                 <obevo.download.dir>${basedir}/target/obevo-download</obevo.download.dir>
                 <obevo.tmp.dir>${basedir}/target/obevo-tmp</obevo.tmp.dir>
+                <obevo.executable>${obevo.download.dir}/bin/deploy.${script.suffix}</obevo.executable>
+                <kata.standardDeployArgs>-noPrompt -deployUserId ${kata.deployUser} -password ${kata.deployPassword}</kata.standardDeployArgs>
+                <kata.setupDir>${basedir}/kata-files/setup</kata.setupDir>
+                <kata.lesson1Dir>${basedir}/kata-files/lesson1</kata.lesson1Dir>
+                <kata.lesson2Dir>${basedir}/kata-files/lesson2</kata.lesson2Dir>
+                <kata.jdbcUrl>jdbc:hsqldb:hsql://localhost:9092/obevokata</kata.jdbcUrl>
             </properties>
+
             <build>
                 <plugins>
+                    <plugin>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>1.8</version>
+                        <executions>
+                            <execution>
+                                <id>download-obevo-and-restart-db</id>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <phase>generate-test-sources</phase>
+                                <configuration>
+                                    <target>
+                                        <echo message="*** Kata Setup ***" />
+
+                                        <echo message="Downloading and unzipping Obevo" />
+                                        <mkdir dir="${obevo.tmp.dir}" />
+                                        <get src="${obevo.download.url}"
+                                             dest="${obevo.tmp.dir}/dist.zip"
+                                             verbose="true"
+                                             usetimestamp="true"/>
+                                        <unzip src="${obevo.tmp.dir}/dist.zip"
+                                               dest="${obevo.download.dir}" />
+                                        <chmod dir="${obevo.download.dir}/bin" perm="755" includes="*.sh" />
+                                        <chmod dir="${kata.setupDir}" perm="755" includes="*.sh" />
+
+                                        <echo message="Shutting down DB beforehand" />
+                                        <exec executable="${kata.setupDir}/shutdownDb.${script.suffix}" />
+                                        <delete dir="${kata.setupDir}/katadb" />
+
+                                        <echo message="Starting DB" />
+                                        <exec executable="${kata.setupDir}/startDb.${script.suffix}"
+                                              spawn="${forkDbIntAnt}" />
+
+                                        <echo message="Initing DB environment with schema infrastructure" />
+                                        <exec executable="${kata.setupDir}/initDb.${script.suffix}" />
+
+                                        <echo message="*** Kata Setup Complete ***" />
+                                    </target>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>run-kata-lesson1</id>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <!-- this needs to run before the unit test, as the unit test depends on the third kata
+                                 step files to be there -->
+                                <phase>process-test-sources</phase>
+                                <configuration>
+                                    <target>
+                                        <echo message="*** Kata Lesson1 ***" />
+
+                                        <echo message="Executing Lesson1 Step1: Initial Deploy" />
+                                        <exec executable="${kata.lesson1Dir}/kata-step1.${script.suffix}" />
+                                        <exec executable="${obevo.executable}" failonerror="true">
+                                            <arg line="DEPLOY -cleanFirst ${kata.standardDeployArgs} -sourcePath src/main/database" />
+                                        </exec>
+
+                                        <echo message="Executing Lesson1 Step2: Modification Deploy" />
+                                        <exec executable="${kata.lesson1Dir}/kata-step2.${script.suffix}" />
+                                        <exec executable="${obevo.executable}" failonerror="true">
+                                            <arg line="DEPLOY ${kata.standardDeployArgs} -sourcePath src/main/database" />
+                                        </exec>
+
+                                        <echo message="Executing Lesson1 Step3: Modification Deploy" />
+                                        <exec executable="${kata.lesson1Dir}/kata-step3.${script.suffix}" />
+                                        <exec executable="${obevo.executable}" failonerror="true">
+                                            <arg line="DEPLOY ${kata.standardDeployArgs} -sourcePath src/main/database" />
+                                        </exec>
+
+                                        <!-- Putting back step 1 to prep for the rest of the test -->
+                                        <exec executable="${kata.lesson1Dir}/kata-step1.${script.suffix}" />
+
+                                        <echo message="*** Kata Lesson1 Complete ***" />
+                                    </target>
+                                </configuration>
+                            </execution>
+<!--
+                            <execution>
+                                <id>run-kata-lesson2</id>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <phase>process-test-sources</phase>
+                                <configuration>
+                                    <target>
+                                        <echo message="*** Kata Lesson2 ***" />
+
+                                        <echo message="Initializing DB for Lesson2" />
+                                        <exec executable="${kata.lesson2Dir}/initDb-lesson2.${script.suffix}" />
+
+                                        <echo message="Executing Lesson2 Step1: reverse-engineer the DB" />
+                                        <exec executable="${obevo.executable}" failonerror="true">
+                                            <arg line="NEWREVENG -mode SCHEMA -dbType HSQL -jdbcUrl ${kata.jdbcUrl} -dbSchema MYLARGESCHEMA -username ${kata.deployUser} -password ${kata.deployPassword} -outputPath ${basedir}/target/lesson2-reveng" />
+                                        </exec>
+
+                                        <echo message="Executing Lesson2 Step2: modify the system-config.xml file" />
+                                        <replace file="${basedir}/target/lesson2-reveng/final/system-config.xml" token="dbHost=&quot;myDevHost.me.com&quot; dbPort=&quot;1234&quot; dbServer=&quot;myServer (if applicable)&quot;" value="jdbcUrl=&quot;${kata.jdbcUrl}&quot; dbSchemaSuffix=&quot;_DEV1&quot;" />
+
+                                        <echo message="Executing Lesson2 Step3: Redeploy the reverse-engineered content to a new dev DB" />
+                                        <exec executable="${obevo.executable}" failonerror="true">
+                                            <arg line="DEPLOY ${kata.standardDeployArgs} -sourcePath ${basedir}/target/lesson2-reveng/final -env dev1" />
+                                        </exec>
+
+                                        <echo message="Executing Lesson2 Step4: Initialize the production schema" />
+                                        <exec executable="${obevo.executable}" failonerror="true">
+                                            <arg line="INIT ${kata.standardDeployArgs} -sourcePath ${basedir}/target/lesson2-reveng/final -env prod" />
+                                        </exec>
+
+                                        <echo message="Executing Lesson2 Step5: Verify new migrations still work" />
+                                        <exec executable="${obevo.executable}" failonerror="true">
+                                            <arg line="DEPLOY ${kata.standardDeployArgs} -sourcePath ${basedir}/target/lesson2-reveng/final -env dev1" />
+                                        </exec>
+                                        <exec executable="${obevo.executable}" failonerror="true">
+                                            <arg line="DEPLOY ${kata.standardDeployArgs} -sourcePath ${basedir}/target/lesson2-reveng/final -env prod" />
+                                        </exec>
+
+                                        <echo message="*** Kata Lesson2 Complete ***" />
+                                    </target>
+                                </configuration>
+                            </execution>
+-->
+                            <execution>
+                                <id>shutdown-db-after-tests</id>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <phase>prepare-package</phase>
+                                <configuration>
+                                    <target>
+                                        <echo message="Shutting down DB afterward" />
+                                        <exec executable="${kata.setupDir}/shutdownDb.${script.suffix}" />
+                                    </target>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
                     <plugin>
                         <groupId>org.jasig.maven</groupId>
                         <artifactId>maven-notice-plugin</artifactId>
@@ -214,7 +362,8 @@
 
                                 <!-- Other SP/sql files to exclude that weren't automatically applied by the mycila plugin originally -->
                                 <exclude>**/*.csv</exclude>
-                                <exclude>**/kata-db-files/katadb/**</exclude>
+                                <exclude>**/setup/katadb/**</exclude>
+                                <exclude>**/reverse-engineering-example/**</exclude>
                             </excludes>
                         </configuration>
                         <executions>
@@ -223,131 +372,6 @@
                                 <goals>
                                     <goal>check</goal>
                                 </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-
-                    <plugin>
-                        <artifactId>maven-antrun-plugin</artifactId>
-                        <version>1.8</version>
-                        <executions>
-                            <execution>
-                                <id>download-obevo-and-restart-db</id>
-                                <goals>
-                                    <goal>run</goal>
-                                </goals>
-                                <phase>generate-test-sources</phase>
-                                <configuration>
-                                    <target>
-                                        <echo message="Downloading and unzipping Obevo" />
-                                        <mkdir dir="${obevo.tmp.dir}" />
-                                        <get src="https://github.com/goldmansachs/obevo/releases/download/${obevo.version}/obevo-cli-${obevo.version}-dist.zip"
-                                             dest="${obevo.tmp.dir}/dist.zip"
-                                             verbose="true"
-                                             usetimestamp="true"/>
-                                        <unzip src="${obevo.tmp.dir}/dist.zip"
-                                               dest="${obevo.download.dir}" />
-                                        <chmod dir="${obevo.download.dir}/bin" perm="755" includes="*.sh" />
-                                        <chmod dir="${basedir}/kata-db-files" perm="755" includes="*.sh" />
-
-                                        <echo message="Shutting down DB beforehand" />
-                                        <exec executable="${basedir}/kata-db-files/shutdownDb.${script.suffix}" />
-                                        <delete dir="${basedir}/kata-db-files/katadb" />
-                                        <echo message="Starting DB" />
-                                        <exec executable="${basedir}/kata-db-files/startDb.${script.suffix}"
-                                              spawn="${forkDbIntAnt}" />
-                                        <echo message="Initing DB w/ schema values" />
-                                        <exec executable="${basedir}/kata-db-files/initDb.${script.suffix}" />
-
-                                        <echo message="Done w/ schema" />
-                                    </target>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>run-kata</id>
-                                <goals>
-                                    <goal>run</goal>
-                                </goals>
-                                <!-- this needs to run before the unit test, as the unit test depends on the third kata
-                                 step files to be there -->
-                                <phase>process-test-sources</phase>
-                                <configuration>
-                                    <target>
-                                        <property name="obevo.executable"
-                                                  value="${obevo.download.dir}/bin/deploy.${script.suffix}" />
-
-                                        <property name="deploy.user" value="katadeployer" />
-                                        <property name="deploy.password" value="katadeploypass" />
-
-                                        <echo message="Executing step1 of the kata" />
-                                        <delete dir="${basedir}/src/main/database/DEMO_SCHEMA" />
-                                        <copy todir="${basedir}/src/main/database">
-                                            <fileset dir="${basedir}/kata-steps/step1" />
-                                        </copy>
-                                        <exec executable="${obevo.executable}" failonerror="true">
-                                            <arg value="DEPLOY" />
-                                            <arg value="-noPrompt" />
-                                            <arg value="-cleanFirst" />
-                                            <arg value="-deployUserId" />
-                                            <arg value="${deploy.user}" />
-                                            <arg value="-password" />
-                                            <arg value="${deploy.password}" />
-                                            <arg value="-sourcePath" />
-                                            <arg value="src/main/database" />
-                                        </exec>
-
-                                        <echo message="Executing step2 of the kata - no cleanFirst" />
-                                        <delete dir="${basedir}/src/main/database/DEMO_SCHEMA" />
-                                        <copy todir="${basedir}/src/main/database">
-                                            <fileset dir="${basedir}/kata-steps/step2" />
-                                        </copy>
-                                        <exec executable="${obevo.executable}" failonerror="true">
-                                            <arg value="DEPLOY" />
-                                            <arg value="-noPrompt" />
-                                            <arg value="-deployUserId" />
-                                            <arg value="${deploy.user}" />
-                                            <arg value="-password" />
-                                            <arg value="${deploy.password}" />
-                                            <arg value="-sourcePath" />
-                                            <arg value="src/main/database" />
-                                        </exec>
-
-                                        <echo message="Executing step3 of the kata - no cleanFirst" />
-                                        <delete dir="${basedir}/src/main/database/DEMO_SCHEMA" />
-                                        <copy todir="${basedir}/src/main/database">
-                                            <fileset dir="${basedir}/kata-steps/step3" />
-                                        </copy>
-                                        <exec executable="${obevo.executable}" failonerror="true">
-                                            <arg value="DEPLOY" />
-                                            <arg value="-noPrompt" />
-                                            <arg value="-deployUserId" />
-                                            <arg value="${deploy.user}" />
-                                            <arg value="-password" />
-                                            <arg value="${deploy.password}" />
-                                            <arg value="-sourcePath" />
-                                            <arg value="src/main/database" />
-                                        </exec>
-
-                                        <!-- Putting back step 1 to prep for the rest of the test -->
-                                        <delete dir="${basedir}/src/main/database/DEMO_SCHEMA" />
-                                        <copy todir="${basedir}/src/main/database">
-                                            <fileset dir="${basedir}/kata-steps/step1" />
-                                        </copy>
-                                    </target>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>shutdown-db-after-tests</id>
-                                <goals>
-                                    <goal>run</goal>
-                                </goals>
-                                <phase>prepare-package</phase>
-                                <configuration>
-                                    <target>
-                                        <echo message="Shutting down DB afterward" />
-                                        <exec executable="${basedir}/kata-db-files/shutdownDb.${script.suffix}" />
-                                    </target>
-                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
