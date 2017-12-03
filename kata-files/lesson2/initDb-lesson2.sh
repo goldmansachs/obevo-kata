@@ -17,4 +17,4 @@
 
 CURDIR=`dirname $0`
 SETUP_DIR=${CURDIR}/../setup
-java -jar ${SETUP_DIR}/hsqldb-sqltool-2.3.2.jar --rcFile=${SETUP_DIR}/sqltool.rc kata ${CURDIR}/initDb-lesson2.ddl
+java -jar ${SETUP_DIR}/hsqldb-sqltool-2.3.4.jar --rcFile=${SETUP_DIR}/sqltool.rc kata ${CURDIR}/initDb-lesson2.ddl

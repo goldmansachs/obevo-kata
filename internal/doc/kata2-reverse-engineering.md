@@ -90,7 +90,7 @@ incrementally to production.
 VCS conflicts and more cumbersome code reviews.
 
 Alternatively, we can put new changes into separate files. But now we need a way to determine how those other files get
-ordered, and in addition we get to another probme ...
+ordered, and in addition we get to another problem ...
 
 
 #### 2) Difficult to maintain and view your objects in your source code
@@ -248,6 +248,9 @@ $OBEVO_HOME/bin/deploy.sh PREVIEW -sourcePath $KATA_HOME/reverse-engineering-exa
 
 To fix this, we need to initialize the schema, i.e. to tell Obevo that this schema has already been deployed, which we
 will do next.
+
+
+(For reference, you can see the expected file output in kata-files/lesson2/expected)
 
 
 ## Step 4: Run INIT against the production environment

@@ -1,0 +1,16 @@
+<dbSystemConfig type="HSQL">
+    <schemas>
+        <schema name="MYLARGESCHEMA" />
+    </schemas>
+    <environments>
+        <!-- Your production database that you reverse-engineered from; do NOT deploy to this environment for your testing!
+        DELETE THIS COMMENT AFTER FINISHING ONBOARDING -->
+        <dbEnvironment name="prod"
+            jdbcUrl="jdbc:hsqldb:hsql://localhost:9092/obevokata">
+        </dbEnvironment>
+
+        <dbEnvironment name="dev1" cleanBuildAllowed="true"
+                       jdbcUrl="jdbc:hsqldb:hsql://localhost:9092/obevokata" dbSchemaSuffix="_DEV1">
+        </dbEnvironment>
+    </environments>
+</dbSystemConfig>
