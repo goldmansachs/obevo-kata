@@ -15,4 +15,4 @@
 @REM
 
 SET CURDIR=%~dp0
-java -cp %CURDIR%/hsqldb-2.3.2.jar org.hsqldb.util.DatabaseManagerSwing --rcfile %CURDIR%/sqltool.rc  --urlid kata
+java -cp %CURDIR%/hsqldb-2.3.4.jar org.hsqldb.util.DatabaseManagerSwing --rcfile %CURDIR%/sqltool.rc  --urlid kata

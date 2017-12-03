@@ -15,4 +15,4 @@
 @REM
 
 SET CURDIR=%~dp0
-java -jar %CURDIR%/hsqldb-sqltool-2.3.2.jar --rcFile=%CURDIR%\sqltool.rc kata %CURDIR%\initDb.ddl
+java -jar %CURDIR%/hsqldb-sqltool-2.3.4.jar --rcFile=%CURDIR%\sqltool.rc kata %CURDIR%\initDb.ddl

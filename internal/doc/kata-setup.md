@@ -27,7 +27,7 @@ Link to [JDK downloads](http://www.oracle.com/technetwork/java/javase/overview/j
 #### 2) Download Obevo
 Download the binary from either:
 * [Obevo Release page](https://github.com/goldmansachs/obevo/releases/latest)
-* Or [this direct link](https://github.com/goldmansachs/obevo/releases/download/6.1.0/obevo-cli-6.1.0-dist.zip)
+* Or [this direct link](https://github.com/goldmansachs/obevo/releases/download/6.4.0/obevo-cli-6.4.0-dist.zip)
 
 
 #### 3) Checkout the kata code
@@ -173,7 +173,7 @@ B) Use any DB viewer tool that you'd like with the following information.
 * User/password is deployer/deploypass
 * URL is jdbc:hsqldb:hsql://localhost:9092/obevokata
 * Driver is org.hsqldb.jdbc.JDBCDriver
-* Driver jar is available at kata-files/setup/hsqldb-2.3.2.jar
+* Driver jar is available at kata-files/setup/hsqldb-2.3.4.jar
 
 
 

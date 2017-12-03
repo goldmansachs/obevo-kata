@@ -18,3 +18,5 @@ obevo-kata.iml
 src/main/database/DEMO_SCHEMA
 nohup.out
 **/nohup.out
+
+reverse-engineering-example

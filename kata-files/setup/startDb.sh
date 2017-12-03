@@ -16,4 +16,4 @@
 #
 
 CURDIR=`dirname $0`
-nohup java -cp ${CURDIR}/hsqldb-2.3.2.jar org.hsqldb.server.Server --port 9092 --database.0 file:${CURDIR}/katadb/obevokata --dbname.0 obevokata &
+nohup java -cp ${CURDIR}/hsqldb-2.3.4.jar org.hsqldb.server.Server --port 9092 --database.0 file:${CURDIR}/katadb/obevokata --dbname.0 obevokata &

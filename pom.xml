@@ -41,7 +41,7 @@
 
 
     <properties>
-        <obevo.version>6.2.0</obevo.version>
+        <obevo.version>6.4.0</obevo.version>
         <jdk.version>1.7</jdk.version>
 
         <kata.deployUser>katadeployer</kata.deployUser>
@@ -362,6 +362,7 @@
 
                                 <!-- Other SP/sql files to exclude that weren't automatically applied by the mycila plugin originally -->
                                 <exclude>**/*.csv</exclude>
+                                <exclude>**/kata-files/lesson2/expected/**</exclude>
                                 <exclude>**/setup/katadb/**</exclude>
                                 <exclude>**/reverse-engineering-example/**</exclude>
                             </excludes>
