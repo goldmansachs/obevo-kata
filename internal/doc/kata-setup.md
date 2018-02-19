@@ -170,7 +170,7 @@ $KATA_HOME/kata-files/setup/dbviewer.sh
 
 B) Use any DB viewer tool that you'd like with the following information.
 
-* User/password is deployer/deploypass
+* User/password is katadeployer/katadeploypass
 * URL is jdbc:hsqldb:hsql://localhost:9092/obevokata
 * Driver is org.hsqldb.jdbc.JDBCDriver
 * Driver jar is available at kata-files/setup/hsqldb-2.3.4.jar
