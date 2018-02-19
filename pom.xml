@@ -41,7 +41,7 @@
 
 
     <properties>
-        <obevo.version>6.4.0</obevo.version>
+        <obevo.version>6.5.0</obevo.version>
         <jdk.version>1.7</jdk.version>
 
         <kata.deployUser>katadeployer</kata.deployUser>
@@ -255,7 +255,6 @@
                                     </target>
                                 </configuration>
                             </execution>
-<!--
                             <execution>
                                 <id>run-kata-lesson2</id>
                                 <goals>
@@ -299,7 +298,6 @@
                                     </target>
                                 </configuration>
                             </execution>
--->
                             <execution>
                                 <id>shutdown-db-after-tests</id>
                                 <goals>
@@ -350,6 +348,7 @@
                             <excludes>
                                 <!-- Standard project files to exclude -->
                                 <exclude>**/.idea/**</exclude>
+                                <exclude>**/dco/*.dco</exclude>
                                 <exclude>**/.travis.yml</exclude>
                                 <exclude>**/BUILD.md</exclude>
                                 <exclude>**/CHANGELOG.md</exclude>

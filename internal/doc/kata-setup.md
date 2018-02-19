@@ -27,7 +27,7 @@ Link to [JDK downloads](http://www.oracle.com/technetwork/java/javase/overview/j
 #### 2) Download Obevo
 Download the binary from either:
 * [Obevo Release page](https://github.com/goldmansachs/obevo/releases/latest)
-* Or [this direct link](https://github.com/goldmansachs/obevo/releases/download/6.4.0/obevo-cli-6.4.0-dist.zip)
+* Or [this direct link](https://github.com/goldmansachs/obevo/releases/download/6.5.0/obevo-cli-6.5.0-dist.zip)
 
 
 #### 3) Checkout the kata code
