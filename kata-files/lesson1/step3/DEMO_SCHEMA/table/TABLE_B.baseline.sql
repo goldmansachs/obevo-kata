@@ -16,6 +16,6 @@
 
 CREATE TABLE TABLE_B (
 	B_ID    INT	NOT NULL,
-	NEW_COLUMN1    INT	NULL,  // kata exercise - fix the TABLE_B.sql file to include this new column
+	NEW_COLUMN1    INT	NULL,  -- kata exercise - fix the TABLE_B.sql file to include this new column
     PRIMARY KEY (B_ID)
 )
