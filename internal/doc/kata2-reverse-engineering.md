@@ -138,7 +138,7 @@ as indicated by the command.
 
 ```
 @REM In Windows
-%OBEVO_HOME%\bin\deploy.sh NEWREVENG -mode SCHEMA -dbType HSQL -jdbcUrl jdbc:hsqldb:hsql://localhost:9092/obevokata -dbSchema MYLARGESCHEMA -username katadeployer -password katadeploypass -outputPath %KATA_HOME%/reverse-engineering-example
+%OBEVO_HOME%\bin\deploy.bat NEWREVENG -mode SCHEMA -dbType HSQL -jdbcUrl jdbc:hsqldb:hsql://localhost:9092/obevokata -dbSchema MYLARGESCHEMA -username katadeployer -password katadeploypass -outputPath %KATA_HOME%/reverse-engineering-example
 ```
 
 ```
