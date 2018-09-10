@@ -41,7 +41,7 @@
 
 
     <properties>
-        <obevo.version>6.5.0</obevo.version>
+        <obevo.version>6.6.2-SNAPSHOT</obevo.version>
         <jdk.version>1.7</jdk.version>
 
         <kata.deployUser>katadeployer</kata.deployUser>
@@ -165,7 +165,8 @@
             <id>continuousBuild</id>
 
             <properties>
-                <obevo.download.url>https://github.com/goldmansachs/obevo/releases/download/${obevo.version}/obevo-cli-${obevo.version}-dist.zip</obevo.download.url>
+                <!--<obevo.download.url>https://github.com/goldmansachs/obevo/releases/download/${obevo.version}/obevo-cli-${obevo.version}-dist.zip</obevo.download.url>-->
+                <obevo.download.url>file:///Users/shantstepanian/IdeaProjects/obevo/obevo-dists/obevo-cli/target/obevo-cli-6.6.2-SNAPSHOT-dist.zip</obevo.download.url>
                 <obevo.download.dir>${basedir}/target/obevo-download</obevo.download.dir>
                 <obevo.tmp.dir>${basedir}/target/obevo-tmp</obevo.tmp.dir>
                 <obevo.executable>${obevo.download.dir}/bin/deploy.${script.suffix}</obevo.executable>
@@ -218,13 +219,14 @@
                                     </target>
                                 </configuration>
                             </execution>
+<!--
                             <execution>
                                 <id>run-kata-lesson1</id>
                                 <goals>
                                     <goal>run</goal>
                                 </goals>
-                                <!-- this needs to run before the unit test, as the unit test depends on the third kata
-                                 step files to be there -->
+                                &lt;!&ndash; this needs to run before the unit test, as the unit test depends on the third kata
+                                 step files to be there &ndash;&gt;
                                 <phase>process-test-sources</phase>
                                 <configuration>
                                     <target>
@@ -248,13 +250,14 @@
                                             <arg line="DEPLOY ${kata.standardDeployArgs} -sourcePath src/main/database" />
                                         </exec>
 
-                                        <!-- Putting back step 1 to prep for the rest of the test -->
+                                        &lt;!&ndash; Putting back step 1 to prep for the rest of the test &ndash;&gt;
                                         <exec executable="${kata.lesson1Dir}/kata-step1.${script.suffix}" />
 
                                         <echo message="*** Kata Lesson1 Complete ***" />
                                     </target>
                                 </configuration>
                             </execution>
+-->
                             <execution>
                                 <id>run-kata-lesson2</id>
                                 <goals>
@@ -314,6 +317,7 @@
                         </executions>
                     </plugin>
 
+<!--
                     <plugin>
                         <groupId>org.jasig.maven</groupId>
                         <artifactId>maven-notice-plugin</artifactId>
@@ -336,9 +340,11 @@
                             </execution>
                         </executions>
                     </plugin>
+-->
+<!--
                     <plugin>
-                        <!-- Using apache-rat-plugin to check that the license files are applied correctly. This is used by
-                         many Apache-licensed projects for validation; hence we use it here. -->
+                        &lt;!&ndash; Using apache-rat-plugin to check that the license files are applied correctly. This is used by
+                         many Apache-licensed projects for validation; hence we use it here. &ndash;&gt;
                         <groupId>org.apache.rat</groupId>
                         <artifactId>apache-rat-plugin</artifactId>
                         <version>0.12</version>
@@ -346,7 +352,7 @@
                             <addLicenseHeaders>false</addLicenseHeaders>
                             <copyrightMessage>Copyright 2017 Goldman Sachs.</copyrightMessage>
                             <excludes>
-                                <!-- Standard project files to exclude -->
+                                &lt;!&ndash; Standard project files to exclude &ndash;&gt;
                                 <exclude>**/.idea/**</exclude>
                                 <exclude>**/dco/*.dco</exclude>
                                 <exclude>**/.travis.yml</exclude>
@@ -359,7 +365,7 @@
                                 <exclude>**/NOTICE.template.txt</exclude>
                                 <exclude>**/README.md</exclude>
 
-                                <!-- Other SP/sql files to exclude that weren't automatically applied by the mycila plugin originally -->
+                                &lt;!&ndash; Other SP/sql files to exclude that weren't automatically applied by the mycila plugin originally &ndash;&gt;
                                 <exclude>**/*.csv</exclude>
                                 <exclude>**/kata-files/lesson2/expected/**</exclude>
                                 <exclude>**/setup/katadb/**</exclude>
@@ -375,6 +381,7 @@
                             </execution>
                         </executions>
                     </plugin>
+-->
                 </plugins>
             </build>
         </profile>
