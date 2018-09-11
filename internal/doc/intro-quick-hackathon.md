@@ -141,8 +141,19 @@ DropWizard would be nice to have, along with any idea you can think of.
 
 # Quick walk through of katas
 
+See [Kata Home Page](/)
+
 
 # Suggested Issues
 
+See [Obevo Issues Page](https://github.com/goldmansachs/obevo/issues)
+
+Look for the label "good first issue" to start with.
+
+You can also look into the "help wanted - small" and
+"help wanted - medium" if you feel you are ready for those.
+
 
 # Developer Guide
+
+Link [here](https://goldmansachs.github.io/obevo/developer-guide.html)
