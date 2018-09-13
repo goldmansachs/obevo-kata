@@ -41,7 +41,7 @@
 
 
     <properties>
-        <obevo.version>6.5.0</obevo.version>
+        <obevo.version>6.6.0</obevo.version>
         <jdk.version>1.7</jdk.version>
 
         <kata.deployUser>katadeployer</kata.deployUser>
@@ -358,6 +358,7 @@
                                 <exclude>**/NOTICE.txt</exclude>
                                 <exclude>**/NOTICE.template.txt</exclude>
                                 <exclude>**/README.md</exclude>
+                                <exclude>**/*.dot</exclude>
 
                                 <!-- Other SP/sql files to exclude that weren't automatically applied by the mycila plugin originally -->
                                 <exclude>**/*.csv</exclude>

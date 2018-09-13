@@ -1,3 +1,20 @@
+<!--
+
+    Copyright 2017 Goldman Sachs.
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+-->
 
 # What is Obevo?
 
@@ -46,12 +63,11 @@ in the audit log
 
 ## What problems can arise from this?
 
-For a handful of database objects, the setup above may suffice. But what
-about for hundreds or thousands of objects over many years?
+For a handful of database objects, the setup above may suffice.
+But what about for hundreds or thousands of tables/views/procedures/etc.
+built up over many years?
 
-![Obevo Big DB Example](link to provide.jpg)
-
-Some inconvencies that can arise:
+Some inconveniences that can arise:
 
 * Incremental files will build up over time, making the codebase harder to maintain
 * Object definitions are interspersed across multiple files:
@@ -59,6 +75,10 @@ Some inconvencies that can arise:
 ![file-to-object mapping](https://res.infoq.com/articles/Obevo-Introduction/en/resources/1pic17-1511988253749.png)
 
 * If we try the object-per-file format earlier, there is no clear way to order the changes
+  * For the small example above, it [doesn't look so bad](graphoutput-small.jpg)
+  * Let's take a medium-sized example (30 tables, 15 procedures, 10 views, 3 types), it [starts getting a bit unwieldy](graphoutput-medium.jpg)
+  * Now for a larger example (100 tables, 50 procedures, 50 views, 6 types), [good luck :)](graphoutput-large.jp2)
+  * And we've seen schemas with an order of magnitude more objects in production use cases
 
 
 # Innovations of Obevo
@@ -104,7 +124,7 @@ native functionality from the in-memory DB, and regular expressions.
 There are different themes that someone can address when contributing to
 Obevo.
 
-1) Core deployent engine: as mentioned earlier, the core deploy logic
+1) Core deployment engine: as mentioned earlier, the core deploy logic
 and ordering algorithm is the heart of what makes Obevo work. There are
 still fixes and improvements that can be done along those lines.
 

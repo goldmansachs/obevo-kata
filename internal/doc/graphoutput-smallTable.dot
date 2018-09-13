@@ -1,0 +1,29 @@
+digraph G {
+  1 [ label="DYN_TABLE_C.chng1" ];
+  2 [ label="DYN_TABLE_C.chng2" ];
+  3 [ label="DYN_TABLE_D.chng1" ];
+  4 [ label="TABLE_A.chng1" ];
+  5 [ label="TABLE_A.chng2" ];
+  6 [ label="TABLE_A.chng3" ];
+  7 [ label="TABLE_A.extra1" ];
+  8 [ label="TABLE_A.extra2" ];
+  9 [ label="TABLE_A.extra3" ];
+  10 [ label="TABLE_B.chng1" ];
+  11 [ label="VIEW1.n/a" ];
+  12 [ label="VIEW2.n/a" ];
+  13 [ label="VIEW3.n/a" ];
+  14 [ label="TABLE_A.n/a" ];
+  15 [ label="TABLE_B.n/a" ];
+  3 -> 2;
+  10 -> 5;
+  9 -> 11;
+  10 -> 12;
+  9 -> 13;
+  10 -> 14;
+  1 -> 2;
+  4 -> 5;
+  5 -> 6;
+  6 -> 7;
+  7 -> 8;
+  8 -> 9;
+}
