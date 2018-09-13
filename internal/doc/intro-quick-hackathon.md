@@ -75,10 +75,10 @@ Some inconveniences that can arise:
 ![file-to-object mapping](https://res.infoq.com/articles/Obevo-Introduction/en/resources/1pic17-1511988253749.png)
 
 * If we try the object-per-file format earlier, there is no clear way to order the changes
- * For the small example above, it [doesn't look so bad](graphoutput-small.jpg)
- * Let's take a medium-sized example (30 tables, 15 procedures, 10 views, 3 types), it [starts getting a bit unwieldy](graphoutput-medium.jpg)
- * Now for a larger example (100 tables, 50 procedures, 50 views, 6 types), [good luck :)](graphoutput-large.jp2)
- * And we've seen schemas with an order of magnitude more objects in production use cases
+  * For the small example above, it [doesn't look so bad](graphoutput-small.jpg)
+  * Let's take a medium-sized example (30 tables, 15 procedures, 10 views, 3 types), it [starts getting a bit unwieldy](graphoutput-medium.jpg)
+  * Now for a larger example (100 tables, 50 procedures, 50 views, 6 types), [good luck :)](graphoutput-large.jp2)
+  * And we've seen schemas with an order of magnitude more objects in production use cases
 
 
 # Innovations of Obevo
