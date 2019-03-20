@@ -20,6 +20,40 @@
 
 Pre-requisite: [Setup the kata](kata-setup.md) if you haven't done so already.
 
+## Overview of Sample Model
+
+For this lesson, we will be working with the database code inside /src/main/database.
+
+We have a simple domain model to deal with - the typical "Bank" example, as described below.
+
+|Table Name|Table Type \[1]|Description|
+|------|------|------|
+|Person|App|The customers looking to manage money in the bank|
+|Account|App|Indicates the amount of money that each person has at the bank|
+|AccountType|Static Code Table|Denotes the types of accounts possible (checking / savings / ...)|
+|Country|Static Code Table|List of countries|
+|AccessLog|App|Indicates accesses to the system|
+
+\[1] Table Type indicates whether the data is managed dynamically by the app or statically (e.g. at deploy time)
+as a code table.
+
+What exactly is in the /src/main/database folder? The [Obevo project-structure documentation](https://goldmansachs.github.io/obevo/db-project-structure.html)
+explains the code structure in more detail, but we will give a quick introduction here:
+
+system-config.xml defines the runtime environment that you intend to deploy to.
+
+DEMO_SCHEMA is your logical schema (i.e. it will have the objects you intend to manage in a physical schema).
+* i.e. your application has one canonical logical schema that is deployed to many environments, such as dev, qa, and prod
+
+We can manage different object types under each schema. For this project, we have:
+* table: the standard table type in SQL
+* view: the standard view type in SQL
+* staticdata: data files that you intend to load into tables (i.e. for cases where you want to manage the content of the table in your code)
+* migration: ad-hoc SQL update scripts that are executed only once. Intended as a utility for edge cases
+
+Let's now try to deploy a schema!
+
+
 ## Step 1 - Deploying a new schema
 This command executes a deployment:
 
@@ -66,7 +100,27 @@ For reference, here are some other command line arguments that may be of use (th
     this in certain environments via the cleanBuildAllowed parameter in the system-config.xml file;
     see the xsd description for more info
 
-## Steps 2 and 3 - Modifying a schema
+## Step 2 - Basic Schema Modifications
+
+adding columns
+deleting columns
+new view
+delete view
+
+## Step 3 - Rollback
+
+and 3 - Modifying a schema
+
+step 3
+rollback with deploy
+rollback with regular script
+
+
+## Step 4 - Data Migration
+data migration
+
+
+
 Let's try out some alterations in the database.
 
 For this kata, run the kata-step2 script to change the files. Normally, you would modify the files as you normally
@@ -105,53 +159,10 @@ $OBEVO_HOME/bin/deploy.sh DEPLOY -sourcePath $KATA_HOME/src/main/database -env t
 
 In step 3, you may notice a couple extra files that have the .baseline. word in them. The next section describes what this does
 
-## Step 3 In-Depth - Maven plugin for testing, and validating changes against a baseline
-
-In the kata step3, we demonstrate the baseline feature. This is optional and is not used in your actual
-DB deployments, but is used to help validate your schema.
-
-For which use case would you typically use this?
-* Table changes are typically executed as ALTER statements. Over the lifetime of a table, many alters get applied and would result in a full table DDL definition
-* But every time you try to make an ALTER change, you implicitly want your table to look like the "full table DDL" that you have in mind
- * Some teams will incorporate this into their db script maintenance, e.g. maintaining a "baseline" ddl
-* But there has not been a standard way to verify that the ALTERs will actually tie up to the "baseline" ddl.
-* Can we do this?
-
-In Obevo, we give this a shot! To do this:
-* Add a *.baseline.sql file for each table object file that you maintain
- * The extension does not matter; it can be *.baseline.ddl too. The only requirement is that the "word" before the extension is "baseline"
-* This file should have the SQLs for a full DDL. No //// CHANGE sections, no //// METADATA sections, just SQLs that are split by GOs
-* These files are ignored when you do a regular deployment
-* But these are used when you do a "validateBaseline" deployment via the Maven plugin (more on the plugin below). What this will do:
- * Executes a regular clean and deploy against the environment that you choose
- * Then executes another clean and deploy against that environment, but this time, if it sees
-any baseline files, it will replace the "regular" file. (it will inherit any ////
-METADATA entries associated w/ the regular file)
- * The tool then compares the table DDLs from the first deployment to the second deployment.
-(aided by the [SchemaCrawler library](http://schemacrawler.sourceforge.net/) utility. If it finds
-any differences, it will fail the maven goal
-
-Note that this can also potentially fit in well if you generate your DDLs from another source, e.g.
-Hibernate or Reladomo. i.e.
-* Use Hibernate or Reladomo generate the baseline DDLs
-* Then verify that those baseline DDLs match your alters
-
-For more information, see the documentation on [ORM DDL Generation](https://goldmansachs.github.io/obevo/orm-integration.html)
-and [Baseline DDL Validation](https://goldmansachs.github.io/obevo/baseline-validation.html).
-
-In the kata example, we have left in a break on-purpose in TABLE_B so that you can see these feature
-first-hand (the error looks like the snippet below). Give it a shot to fix this (i.e. add an ALTER
-command on TABLE_B to get it in line with the baseline)
-
-```
-[ERROR] ObjectCompareBreak{object=obevoKATA.DEMO_SCHEMA.TABLE_B.NEW_COLUMN1, clazz=interface schemacrawler.schema.Column, objectCompareBreakSide=RIGHT}
-```
-
 
 
 ## That's it! Onto the next lesson
 
 Lesson 1 showed you how to deploy a brand new schema.
 
-But you may have an existing schema that you want to onboard. For an idea of how that process goes, please go
-to [Lesson 2](kata2-reverse-engineering.md).
+Please continue to the other kata lessons via [this page](/README.md).

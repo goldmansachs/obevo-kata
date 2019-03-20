@@ -24,6 +24,8 @@ import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.handlers.MapListHandler;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -38,6 +40,8 @@ import static org.junit.Assert.assertEquals;
  * Remember to start your DB using the kata-files/setup/startDb.sh or startDb.bat script before running ths JUnit test.
  */
 public class ExampleDbUnitTest {
+    private static final Logger LOG = LoggerFactory.getLogger(ExampleDbUnitTest.class);
+
     private DataSource ds;
 
     @Before
@@ -51,7 +55,7 @@ public class ExampleDbUnitTest {
                 .setupAndCleanAndDeploy()
                 .getEnvironment();
 
-        System.out.println("in case you want to see what the url will be: " + db.getJdbcUrl());
+        LOG.info("in case you want to see what the url will be: {}", db.getJdbcUrl());
 
         // create the datasource for your test. You have the option to append URL parameters to simulate your actual app conditions if you'd like
         BasicDataSource ds = new BasicDataSource();
@@ -69,53 +73,33 @@ public class ExampleDbUnitTest {
         // Now run your test once the setup is done
         QueryRunner jdbc = new QueryRunner(ds);
 
-        List<Map<String, Object>> tableCResults = jdbc.query("select * from DYN_TABLE_C ORDER BY C_ID", new MapListHandler());
-        System.out.println("Print DYN_TABLE_C for debug");
+        List<Map<String, Object>> tableCResults = jdbc.query("select * from AccessLog ORDER BY ID", new MapListHandler());
+        LOG.info("Print AccessLog for debug");
         for (Map<String, Object> result : tableCResults) {
-            System.out.println("DYN_TABLE_C ROW: " + result);
+            LOG.info("AccessLog ROW: {}", result);
         }
-        assertEquals(5, tableCResults.size());
-        assertTableCRow(tableCResults, 0, 1, 1, "row1", null);
-        assertTableCRow(tableCResults, 1, 2, 2, "row  2", Timestamp.valueOf("2013-01-02 12:34:56"));
-        assertTableCRow(tableCResults, 2, 3, 2, "", Timestamp.valueOf("2013-01-02 12:34:56.1"));
-        assertTableCRow(tableCResults, 3, 4, 2, "  row  4  ", Timestamp.valueOf("2013-01-02 12:34:56.234"));
-        assertTableCRow(tableCResults, 4, 5, 2, null, Timestamp.valueOf("2013-01-02 12:34:56.567891"));
 
-        List<Map<String, Object>> tableDResults = jdbc.query("select * from DYN_TABLE_D ORDER BY D_ID", new MapListHandler());
-        System.out.println("Print DYN_TABLE_D for debug");
-        for (Map<String, Object> result : tableDResults) {
-            System.out.println("DYN_TABLE_D ROW: " + result);
-        }
-        assertEquals(3, tableDResults.size());
-        assertTableDRow(tableDResults, 0, 1);
-        assertTableDRow(tableDResults, 1, 2);
-        assertTableDRow(tableDResults, 2, 3);
+        assertEquals(4, tableCResults.size());
+        assertAccessLogRow(tableCResults, 0, 1, 1, "Logging in", Timestamp.valueOf("2019-03-01 05:06:07"));
+        assertAccessLogRow(tableCResults, 1, 2, 10, null, Timestamp.valueOf("2019-03-01 10:06:07"));
+        assertAccessLogRow(tableCResults, 2, 3, 20, "Logging in 3", null);
+        assertAccessLogRow(tableCResults, 3, 4, null, "Logging in 4", Timestamp.valueOf("2019-03-01 20:06:07"));
     }
 
-    private void loadData(DataSource ds) {
+    private void loadData(DataSource ds) throws SQLException {
         try (Connection connection = ds.getConnection()) {
             JdbcHelper jdbc = new JdbcHelper();
-            jdbc.update(connection, "INSERT INTO DEMO_SCHEMA.DYN_TABLE_D (D_ID) VALUES (1)");
-            jdbc.update(connection, "INSERT INTO DEMO_SCHEMA.DYN_TABLE_D (D_ID) VALUES (2)");
-            jdbc.update(connection, "INSERT INTO DEMO_SCHEMA.DYN_TABLE_D (D_ID) VALUES (3)");
-            jdbc.update(connection, "INSERT INTO DEMO_SCHEMA.DYN_TABLE_C (C_ID,D_ID,STRING_FIELD,TIMESTAMP_FIELD) VALUES (1,1,'row1',null)");
-            jdbc.update(connection, "INSERT INTO DEMO_SCHEMA.DYN_TABLE_C (C_ID,D_ID,STRING_FIELD,TIMESTAMP_FIELD) VALUES (2,2,'row  2','2013-01-02 12:34:56')");
-            jdbc.update(connection, "INSERT INTO DEMO_SCHEMA.DYN_TABLE_C (C_ID,D_ID,STRING_FIELD,TIMESTAMP_FIELD) VALUES (3,2,'','2013-01-02 12:34:56.1')");
-            jdbc.update(connection, "INSERT INTO DEMO_SCHEMA.DYN_TABLE_C (C_ID,D_ID,STRING_FIELD,TIMESTAMP_FIELD) VALUES (4,2,'  row  4  ','2013-01-02 12:34:56.234')");
-            jdbc.update(connection, "INSERT INTO DEMO_SCHEMA.DYN_TABLE_C (C_ID,D_ID,STRING_FIELD,TIMESTAMP_FIELD) VALUES (5,2,null,'2013-01-02 12:34:56.567891')");
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+            jdbc.update(connection, "INSERT INTO AccessLog (id, accessTime, accessReason, accessCount) VALUES (1, '2019-03-01 05:06:07', 'Logging in', 1)");
+            jdbc.update(connection, "INSERT INTO AccessLog (id, accessTime, accessReason, accessCount) VALUES (2, '2019-03-01 10:06:07', null, 10)");
+            jdbc.update(connection, "INSERT INTO AccessLog (id, accessTime, accessReason, accessCount) VALUES (3, null, 'Logging in 3', 20)");
+            jdbc.update(connection, "INSERT INTO AccessLog (id, accessTime, accessReason, accessCount) VALUES (4, '2019-03-01 20:06:07', 'Logging in 4', null)");
         }
     }
 
-    private void assertTableDRow(List<Map<String, Object>> results, int index, int dId) {
-        assertEquals(dId, results.get(index).get("D_ID"));
-    }
-
-    private void assertTableCRow(List<Map<String, Object>> results, int index, int cId, int dId, String stringField, Timestamp timestampField) {
-        assertEquals(cId, results.get(index).get("C_ID"));
-        assertEquals(dId, results.get(index).get("D_ID"));
-        assertEquals(stringField, results.get(index).get("STRING_FIELD"));
-        assertEquals(timestampField, results.get(index).get("TIMESTAMP_FIELD"));
+    private void assertAccessLogRow(List<Map<String, Object>> results, int index, int id, Integer count, String reason, Timestamp accessTime) {
+        assertEquals(id, results.get(index).get("ID"));
+        assertEquals(accessTime, results.get(index).get("ACCESSTIME"));
+        assertEquals(reason, results.get(index).get("ACCESSREASON"));
+        assertEquals(count, results.get(index).get("ACCESSCOUNT"));
     }
 }

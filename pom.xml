@@ -41,12 +41,23 @@
 
 
     <properties>
-        <obevo.version>6.6.0</obevo.version>
-        <jdk.version>1.7</jdk.version>
+        <obevo.version>local-SNAPSHOT</obevo.version>
+        <jdk.version>1.8</jdk.version>
 
         <kata.deployUser>katadeployer</kata.deployUser>
         <kata.deployPassword>katadeploypass</kata.deployPassword>
+
+        <hibernate.version>5.4.0.Final</hibernate.version>
     </properties>
+
+    <repositories>
+        <repository>
+            <id>snapshots-repo</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+            <releases><enabled>false</enabled></releases>
+            <snapshots><enabled>true</enabled></snapshots>
+        </repository>
+    </repositories>
 
     <dependencyManagement>
         <dependencies>
@@ -63,6 +74,21 @@
     </dependencyManagement>
 
     <dependencies>
+        <dependency>
+            <groupId>com.goldmansachs.obevo</groupId>
+            <artifactId>obevo-hibernate5-util</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>${hibernate.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-envers</artifactId>
+            <version>${hibernate.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>com.goldmansachs.obevo</groupId>
             <artifactId>obevo-db-unittest-util</artifactId>

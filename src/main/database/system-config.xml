@@ -61,8 +61,8 @@ Notable optional attributes:
     Note - if you would like to see this group/user creation feature enabled for the non-in-memory dbs, raise a JIRA request with your use case
     -->
     <groups>
-        <group name="DACT_RO" />
-        <group name="DACT_RW" />
+        <group name="RO_GROUP1" />
+        <group name="RW_GROUP" />
     </groups>
     <users>
         <!-- note - passwords are required for users. But this is only a password for the in-memory db. In any case, you should really

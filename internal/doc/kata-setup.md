@@ -27,7 +27,7 @@ Link to [JDK downloads](http://www.oracle.com/technetwork/java/javase/overview/j
 #### 2) Download Obevo
 Download the binary from either:
 * [Obevo Release page](https://github.com/goldmansachs/obevo/releases/latest)
-* Or [this direct link](https://github.com/goldmansachs/obevo/releases/download/6.5.0/obevo-cli-6.5.0-dist.zip)
+* Or [this direct link](https://github.com/goldmansachs/obevo/releases/download/7.0.2/obevo-cli-7.0.2-dist.zip)
 
 
 #### 3) Checkout the kata code
@@ -85,7 +85,7 @@ Your setup should look like this:
 
 In this kata, we also demonstrate how to use Obevo in a unit test and to run a test deployment as part of your build.
 
-For that, you will need Maven, which you can download from [here](https://archive.apache.org/dist/maven/maven-3/3.5.0/binaries/apache-maven-3.5.0-bin.zip)
+For that, you will need Maven, which you can download from [here](https://archive.apache.org/dist/maven/maven-3/3.6.0/binaries/apache-maven-3.6.0-bin.zip)
 
 
 #### 7) Understand the files in your project
