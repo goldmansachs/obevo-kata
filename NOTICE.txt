@@ -26,31 +26,21 @@ This product depends on (links to) the following software:
   Eclipse Collections API under Eclipse Public License - v 1.0
   Eclipse Collections Main Library under Eclipse Public License - v 1.0
   FreeMarker under Apache License, Version 2.0
-  Hamcrest Core under New BSD License
-  HyperSQL Database under HSQLDB License, a BSD open source license
   IntelliJ IDEA Annotations under The Apache Software License, Version 2.0
   JCL 1.1.1 implemented over SLF4J under MIT License
   JGraphT - Core under Eclipse Public License (EPL) 1.0
+  JGraphT - Ext under GNU Lesser General Public License Version 2.1, February 1999 or Eclipse Public License (EPL) 1.0
   Joda time under Apache 2
-  JUnit under Common Public License Version 1.0
   juniversalchardet under Mozilla Public License 1.1 (MPL 1.1)
-  Obevo Kata under The Apache License, Version 2.0
   obevo-core under The Apache License, Version 2.0
   obevo-db under The Apache License, Version 2.0
-  obevo-db-hsql under The Apache License, Version 2.0
-  obevo-db-unittest-util under The Apache License, Version 2.0
-  obevo-dbmetadata-impl under The Apache License, Version 2.0
+  obevo-hibernate-util under The Apache License, Version 2.0
+  obevo-hibernate5-util under The Apache License, Version 2.0
   obevo-internal-comparer under The Apache License, Version 2.0
   opencsv under Apache 2
   org.jetbrains.kotlin:kotlin-stdlib under The Apache License, Version 2.0
-  SchemaCrawler under Eclipse Public License - v 1.0
-  SchemaCrawler for HyperSQL under Eclipse Public License - v 1.0
-  SchemaCrawler for IBM DB2 under Eclipse Public License - v 1.0
-  SchemaCrawler for Microsoft SQL Server under Eclipse Public License - v 1.0
-  SchemaCrawler for Oracle under Eclipse Public License - v 1.0
-  SchemaCrawler for PostgreSQL under Eclipse Public License - v 1.0
-  SchemaCrawler for Sybase IQ under Eclipse Public License - v 1.0
+  org.jetbrains.kotlin:kotlin-stdlib-common under The Apache License, Version 2.0
+  org.jetbrains.kotlin:kotlin-stdlib-jdk7 under The Apache License, Version 2.0
   SLF4J API Module under MIT License
-  SLF4J Simple Binding under MIT License
   SnakeYAML under Apache License, Version 2.0
 

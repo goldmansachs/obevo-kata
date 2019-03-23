@@ -82,16 +82,23 @@
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
             <version>${hibernate.version}</version>
+            <optional>true</optional>  <!-- optional to prevent distribution and keep out GPL license -->
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-envers</artifactId>
             <version>${hibernate.version}</version>
+            <optional>true</optional>  <!-- optional to prevent distribution and keep out GPL license -->
         </dependency>
 
         <dependency>
             <groupId>com.goldmansachs.obevo</groupId>
             <artifactId>obevo-db-unittest-util</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.goldmansachs.obevo</groupId>
+            <artifactId>obevo-db-postgresql</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -192,13 +199,15 @@
 
             <properties>
                 <obevo.download.url>https://github.com/goldmansachs/obevo/releases/download/${obevo.version}/obevo-cli-${obevo.version}-dist.zip</obevo.download.url>
+                <!--<obevo.download.url>file:///Users/shantstepanian/IdeaProjects/obevo/obevo-dists/obevo-cli/target/obevo-cli-local-SNAPSHOT-dist.zip</obevo.download.url>-->
                 <obevo.download.dir>${basedir}/target/obevo-download</obevo.download.dir>
                 <obevo.tmp.dir>${basedir}/target/obevo-tmp</obevo.tmp.dir>
                 <obevo.executable>${obevo.download.dir}/bin/deploy.${script.suffix}</obevo.executable>
+                <kata.platform>hsql</kata.platform>
                 <kata.standardDeployArgs>-noPrompt -deployUserId ${kata.deployUser} -password ${kata.deployPassword}</kata.standardDeployArgs>
                 <kata.setupDir>${basedir}/kata-files/setup</kata.setupDir>
                 <kata.lesson1Dir>${basedir}/kata-files/lesson1</kata.lesson1Dir>
-                <kata.lesson2Dir>${basedir}/kata-files/lesson2</kata.lesson2Dir>
+                <kata.lesson2Dir>${basedir}/kata-files/lesson2/${kata.platform}</kata.lesson2Dir>
                 <kata.jdbcUrl>jdbc:hsqldb:hsql://localhost:9092/obevokata</kata.jdbcUrl>
             </properties>
 
@@ -224,6 +233,7 @@
                                              dest="${obevo.tmp.dir}/dist.zip"
                                              verbose="true"
                                              usetimestamp="true"/>
+                                        <delete dir="${obevo.download.dir}" />
                                         <unzip src="${obevo.tmp.dir}/dist.zip"
                                                dest="${obevo.download.dir}" />
                                         <chmod dir="${obevo.download.dir}/bin" perm="755" includes="*.sh" />
@@ -235,10 +245,11 @@
 
                                         <echo message="Starting DB" />
                                         <exec executable="${kata.setupDir}/startDb.${script.suffix}"
+                                              failonerror="true"
                                               spawn="${forkDbIntAnt}" />
 
                                         <echo message="Initing DB environment with schema infrastructure" />
-                                        <exec executable="${kata.setupDir}/initDb.${script.suffix}" />
+                                        <exec executable="${kata.setupDir}/initDb.${script.suffix}" failonerror="true" />
 
                                         <echo message="*** Kata Setup Complete ***" />
                                     </target>
@@ -257,25 +268,31 @@
                                         <echo message="*** Kata Lesson1 ***" />
 
                                         <echo message="Executing Lesson1 Step1: Initial Deploy" />
-                                        <exec executable="${kata.lesson1Dir}/kata-step1.${script.suffix}" />
+                                        <exec executable="${kata.lesson1Dir}/kata-step1.${script.suffix}" failonerror="true" />
                                         <exec executable="${obevo.executable}" failonerror="true">
-                                            <arg line="DEPLOY -cleanFirst ${kata.standardDeployArgs} -sourcePath src/main/database" />
+                                            <arg line="DEPLOY -cleanFirst ${kata.standardDeployArgs} -sourcePath src/main/database/system-config-${kata.platform}.xml" />
                                         </exec>
 
                                         <echo message="Executing Lesson1 Step2: Modification Deploy" />
-                                        <exec executable="${kata.lesson1Dir}/kata-step2.${script.suffix}" />
+                                        <exec executable="${kata.lesson1Dir}/kata-step2.${script.suffix}" failonerror="true" />
                                         <exec executable="${obevo.executable}" failonerror="true">
-                                            <arg line="DEPLOY ${kata.standardDeployArgs} -sourcePath src/main/database" />
+                                            <arg line="DEPLOY ${kata.standardDeployArgs} -sourcePath src/main/database/system-config-${kata.platform}.xml" />
                                         </exec>
 
                                         <echo message="Executing Lesson1 Step3: Modification Deploy" />
-                                        <exec executable="${kata.lesson1Dir}/kata-step3.${script.suffix}" />
+                                        <exec executable="${kata.lesson1Dir}/kata-step3.${script.suffix}" failonerror="true" />
                                         <exec executable="${obevo.executable}" failonerror="true">
-                                            <arg line="DEPLOY ${kata.standardDeployArgs} -sourcePath src/main/database" />
+                                            <arg line="DEPLOY ${kata.standardDeployArgs} -sourcePath src/main/database/system-config-${kata.platform}.xml" />
+                                        </exec>
+
+                                        <echo message="Executing Lesson1 Step4: Modification Deploy" />
+                                        <exec executable="${kata.lesson1Dir}/kata-step4.${script.suffix}" failonerror="true" />
+                                        <exec executable="${obevo.executable}" failonerror="true">
+                                            <arg line="DEPLOY ${kata.standardDeployArgs} -sourcePath src/main/database/system-config-${kata.platform}.xml" />
                                         </exec>
 
                                         <!-- Putting back step 1 to prep for the rest of the test -->
-                                        <exec executable="${kata.lesson1Dir}/kata-step1.${script.suffix}" />
+                                        <exec executable="${kata.lesson1Dir}/kata-step1.${script.suffix}" failonerror="true" />
 
                                         <echo message="*** Kata Lesson1 Complete ***" />
                                     </target>
@@ -292,7 +309,7 @@
                                         <echo message="*** Kata Lesson2 ***" />
 
                                         <echo message="Initializing DB for Lesson2" />
-                                        <exec executable="${kata.lesson2Dir}/initDb-lesson2.${script.suffix}" />
+                                        <exec executable="${kata.lesson2Dir}/initDb-lesson2.${script.suffix}" failonerror="true" />
 
                                         <echo message="Executing Lesson2 Step1: reverse-engineer the DB" />
                                         <exec executable="${obevo.executable}" failonerror="true">
@@ -343,7 +360,7 @@
                     <plugin>
                         <groupId>org.jasig.maven</groupId>
                         <artifactId>maven-notice-plugin</artifactId>
-                        <version>1.0.6.1</version>
+                        <version>1.1.0</version>
                         <configuration>
                             <noticeTemplate>${basedir}/internal/build/NOTICE.template.txt</noticeTemplate>
                             <licenseMapping>
@@ -351,6 +368,11 @@
                             </licenseMapping>
                             <fileName>NOTICE.txt</fileName>
                             <includeChildDependencies>false</includeChildDependencies>
+                            <includeScopes>
+                                <includeScopes>compile</includeScopes>
+                                <includeScopes>runtime</includeScopes>
+                            </includeScopes>
+                            <excludeOptional>true</excludeOptional>
                         </configuration>
                         <executions>
                             <execution>
@@ -388,7 +410,9 @@
 
                                 <!-- Other SP/sql files to exclude that weren't automatically applied by the mycila plugin originally -->
                                 <exclude>**/*.csv</exclude>
-                                <exclude>**/kata-files/lesson2/expected/**</exclude>
+                                <exclude>**/kata-files/lesson1/**</exclude>
+                                <exclude>**/src/main/database/DEMO_SCHEMA/**</exclude>
+                                <exclude>**/kata-files/lesson2/**/expected/**</exclude>
                                 <exclude>**/setup/katadb/**</exclude>
                                 <exclude>**/reverse-engineering-example/**</exclude>
                             </excludes>
