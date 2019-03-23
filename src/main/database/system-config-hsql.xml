@@ -16,7 +16,7 @@
 
 -->
 <!--
-The system-config.xml file we use for this data will have comments indicating which fields you need and which you don't.
+The system-config-postgresql.xml file we use for this data will have comments indicating which fields you need and which you don't.
 -->
 
 <!--
@@ -99,7 +99,6 @@ Notable optional attributes:
         * autoReorgEnabled - similar to the autoReorgEnabled attribute at the system level, except that we can override at an environment level if we choose
          -->
         <dbEnvironment name="test"
-            type="DEV"
             cleanBuildAllowed="true"
             jdbcUrl="jdbc:hsqldb:hsql://localhost:9092/obevokata"
             dbSchemaSuffix="">

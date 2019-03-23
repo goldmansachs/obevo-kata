@@ -16,5 +16,8 @@
 #
 
 CURDIR=`dirname $0`
-SETUP_DIR=${CURDIR}/../../setup/hsql
-java -jar ${SETUP_DIR}/hsqldb-sqltool-2.3.4.jar --rcFile=${SETUP_DIR}/sqltool.rc kata ${CURDIR}/initDb-lesson2.ddl
+
+CONTAINER_NAME=obevo-postgresql-instance
+
+docker cp $CURDIR/initDb-lesson2.ddl $CONTAINER_NAME:/tmp/initDb-lesson2.ddl
+docker exec $CONTAINER_NAME psql -d postgres -U katadeployer -f /tmp/initDb-lesson2.ddl

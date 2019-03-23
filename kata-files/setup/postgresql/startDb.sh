@@ -16,5 +16,9 @@
 #
 
 CURDIR=`dirname $0`
-SETUP_DIR=${CURDIR}/../../setup/hsql
-java -jar ${SETUP_DIR}/hsqldb-sqltool-2.3.4.jar --rcFile=${SETUP_DIR}/sqltool.rc kata ${CURDIR}/initDb-lesson2.ddl
+
+CONTAINER_NAME=obevo-postgresql-instance
+
+$CURDIR/shutdownDb.sh
+
+docker run --name $CONTAINER_NAME -e POSTGRES_DB=postgres -e POSTGRES_USER=katadeployer -e POSTGRES_PASSWORD=katadeploypass -d -p 5432:5432 postgres

@@ -15,6 +15,12 @@
 # under the License.
 #
 
-CURDIR=`dirname $0`
-SETUP_DIR=${CURDIR}/../../setup/hsql
-java -jar ${SETUP_DIR}/hsqldb-sqltool-2.3.4.jar --rcFile=${SETUP_DIR}/sqltool.rc kata ${CURDIR}/initDb-lesson2.ddl
+CONTAINER_NAME=obevo-postgresql-instance
+
+OLD_CONTAINER_ID=$(docker ps -aqf "name=$CONTAINER_NAME")
+if [[ ! -z "$OLD_CONTAINER_ID" ]]
+then
+    echo "Shutting down old container"
+    docker stop $OLD_CONTAINER_ID
+    docker rm $OLD_CONTAINER_ID
+fi

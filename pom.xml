@@ -198,17 +198,19 @@
             <id>continuousBuild</id>
 
             <properties>
-                <obevo.download.url>https://github.com/goldmansachs/obevo/releases/download/${obevo.version}/obevo-cli-${obevo.version}-dist.zip</obevo.download.url>
-                <!--<obevo.download.url>file:///Users/shantstepanian/IdeaProjects/obevo/obevo-dists/obevo-cli/target/obevo-cli-local-SNAPSHOT-dist.zip</obevo.download.url>-->
+                <!--<obevo.download.url>https://github.com/goldmansachs/obevo/releases/download/${obevo.version}/obevo-cli-${obevo.version}-dist.zip</obevo.download.url>-->
+                <obevo.download.url>file:///Users/shantstepanian/IdeaProjects/obevo/obevo-dists/obevo-cli/target/obevo-cli-local-SNAPSHOT-dist.zip</obevo.download.url>
                 <obevo.download.dir>${basedir}/target/obevo-download</obevo.download.dir>
                 <obevo.tmp.dir>${basedir}/target/obevo-tmp</obevo.tmp.dir>
                 <obevo.executable>${obevo.download.dir}/bin/deploy.${script.suffix}</obevo.executable>
                 <kata.platform>hsql</kata.platform>
+                <!--<kata.platform>postgresql</kata.platform>-->
                 <kata.standardDeployArgs>-noPrompt -deployUserId ${kata.deployUser} -password ${kata.deployPassword}</kata.standardDeployArgs>
-                <kata.setupDir>${basedir}/kata-files/setup</kata.setupDir>
+                <kata.setupDir>${basedir}/kata-files/setup/${kata.platform}</kata.setupDir>
                 <kata.lesson1Dir>${basedir}/kata-files/lesson1</kata.lesson1Dir>
                 <kata.lesson2Dir>${basedir}/kata-files/lesson2/${kata.platform}</kata.lesson2Dir>
                 <kata.jdbcUrl>jdbc:hsqldb:hsql://localhost:9092/obevokata</kata.jdbcUrl>
+                <!--<kata.jdbcUrl>jdbc:postgresql://localhost:5432/postgres</kata.jdbcUrl>-->
             </properties>
 
             <build>
@@ -313,7 +315,7 @@
 
                                         <echo message="Executing Lesson2 Step1: reverse-engineer the DB" />
                                         <exec executable="${obevo.executable}" failonerror="true">
-                                            <arg line="NEWREVENG -mode SCHEMA -dbType HSQL -jdbcUrl ${kata.jdbcUrl} -dbSchema MYLARGESCHEMA -username ${kata.deployUser} -password ${kata.deployPassword} -outputPath ${basedir}/target/lesson2-reveng" />
+                                            <arg line="NEWREVENG -mode SCHEMA -dbType ${kata.platform} -jdbcUrl ${kata.jdbcUrl} -dbSchema MYLARGESCHEMA -username ${kata.deployUser} -password ${kata.deployPassword} -outputPath ${basedir}/target/lesson2-reveng" />
                                         </exec>
 
                                         <echo message="Executing Lesson2 Step2: modify the system-config.xml file" />
@@ -413,7 +415,7 @@
                                 <exclude>**/kata-files/lesson1/**</exclude>
                                 <exclude>**/src/main/database/DEMO_SCHEMA/**</exclude>
                                 <exclude>**/kata-files/lesson2/**/expected/**</exclude>
-                                <exclude>**/setup/katadb/**</exclude>
+                                <exclude>**/setup/hsql/katadb/**</exclude>
                                 <exclude>**/reverse-engineering-example/**</exclude>
                             </excludes>
                         </configuration>
