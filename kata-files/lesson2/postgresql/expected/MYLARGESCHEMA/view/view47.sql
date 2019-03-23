@@ -1,0 +1,19 @@
+CREATE VIEW view47 AS
+ SELECT 1 AS c1
+   FROM table68
+UNION
+ SELECT 1 AS c1
+   FROM table307
+UNION
+ SELECT 1 AS c1
+   FROM table357
+UNION
+ SELECT 1 AS c1
+   FROM view23
+UNION
+ SELECT 1 AS c1
+   FROM view40;
+
+
+
+GO

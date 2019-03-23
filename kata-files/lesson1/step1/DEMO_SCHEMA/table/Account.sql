@@ -1,7 +1,7 @@
 //// CHANGE name=change0
 create table Account (
     id integer not null,
-    accountBalance double,
+    accountBalance decimal,
     accountHolder_id integer,
     accountType_id integer,
     primary key (id)

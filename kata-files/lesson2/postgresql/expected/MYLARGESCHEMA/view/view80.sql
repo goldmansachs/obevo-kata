@@ -1,0 +1,13 @@
+CREATE VIEW view80 AS
+ SELECT 1 AS c1
+   FROM table128
+UNION
+ SELECT 1 AS c1
+   FROM table97
+UNION
+ SELECT 1 AS c1
+   FROM table57;
+
+
+
+GO

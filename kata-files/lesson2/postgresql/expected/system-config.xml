@@ -1,0 +1,18 @@
+<dbSystemConfig type="POSTGRESQL">
+    <schemas>
+        <schema name="MYLARGESCHEMA" />
+    </schemas>
+    <environments>
+        <!-- Your production database that you reverse-engineered from; do NOT deploy to this environment for your testing!
+        DELETE THIS COMMENT AFTER FINISHING ONBOARDING -->
+        <dbEnvironment name="prod"
+            dbHost="localhost" dbPort="5432" dbServer="postgres">
+        </dbEnvironment>
+
+        <!-- Please work with this environment instead for your onboarding testing
+        DELETE THIS COMMENT AFTER FINISHING ONBOARDING -->
+        <dbEnvironment name="dev1"
+                       dbHost="localhost" dbPort="5432" dbServer="postgres" dbSchemaSuffix="_DEV1" cleanBuildAllowed="true">
+        </dbEnvironment>
+    </environments>
+</dbSystemConfig>

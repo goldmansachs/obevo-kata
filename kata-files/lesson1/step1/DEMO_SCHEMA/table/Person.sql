@@ -8,10 +8,3 @@ create table Person (
         primary key (id)
     )
 GO
-
-//// CHANGE FK name=Person_Country
-alter table Person 
-       add constraint Person_Country
-       foreign key (addressCountry_id) 
-       references Country
-GO
