@@ -18,9 +18,12 @@
 CONTAINER_NAME=obevo-postgresql-instance
 
 RUNNING_CONTAINER_ID=$(docker ps -aqf "name=$CONTAINER_NAME")
+
+
 if [[ ! -z "$RUNNING_CONTAINER_ID" ]]
 then
-    echo "Shutting down old container"
-    docker stop $RUNNING_CONTAINER_ID
-    docker rm $RUNNING_CONTAINER_ID
+    docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $RUNNING_CONTAINER_ID
+else
+    echo "Container is not running"
+    exit 1
 fi

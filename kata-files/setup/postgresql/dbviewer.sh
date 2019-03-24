@@ -17,28 +17,21 @@
 
 CONTAINER_NAME=obevo-pgadmin-instance
 
-OLD_CONTAINER_ID=$(docker ps -aqf "name=$CONTAINER_NAME")
-if [[ ! -z "$OLD_CONTAINER_ID" ]]
+RUNNING_CONTAINER_ID=$(docker ps -aqf "name=$CONTAINER_NAME")
+if [[ ! -z "$RUNNING_CONTAINER_ID" ]]
 then
     echo "Shutting down old container"
-    docker stop $OLD_CONTAINER_ID
-    docker rm $OLD_CONTAINER_ID
+    docker stop $RUNNING_CONTAINER_ID
+    docker rm $RUNNING_CONTAINER_ID
 fi
 
-docker run --name $CONTAINER_NAME -p 8080:80 -e "PGADMIN_DEFAULT_EMAIL=katadeployer@obevo-kata.com" -e "PGADMIN_DEFAULT_PASSWORD=katadeploypass" -d dpage/pgadmin4
+PGADMIN_PORT=8080
+PGADMIN_EMAIL="katadeployer@obevo-kata.com"
+PGADMIN_PASSWORD="katadeploypass"
+docker run --name $CONTAINER_NAME -p 8080:80 -e "PGADMIN_DEFAULT_EMAIL=$PGADMIN_EMAIL" -e "PGADMIN_DEFAULT_PASSWORD=$PGADMIN_PASSWORD" -d dpage/pgadmin4
 
+echo ""
+echo "pgadmin4 setup successful"
+echo ""
+echo "Please visit http://localhost:8080 w/ username = $PGADMIN_EMAIL and password as $PGADMIN_PASSWORD to access the page"
 
-echo "Please visit http://localhost:8080 w/ username = katadeployer@obevo-kata.com and password as katadeploypass to access the page"
-
-# connect to a new server
-# enter name
-
-#Connection:
-#Host: localhost
-#Port: 5432
-#Maintenance database: postgres
-#Username: Katadeployer
-#Password: fadsfsdf
-#
-#docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' efa02a
-#172.17.0.3

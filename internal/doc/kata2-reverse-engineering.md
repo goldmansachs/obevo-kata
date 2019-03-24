@@ -72,7 +72,7 @@ Given these interdependencies, it is not a trivial task to deploy the schema by 
 individual object and deploying them; the **_order_** in which we deploy objects is also critical.
 
 Many reverse-engineering tools will generate scripts for an entire schema that produces a correct order of the objects;
-see the [initDb-lesson2.ddl](/kata-files/lesson2/initDb-lesson2.ddl) file for an example; this was the file used to deploy the
+see the initDb-lesson2.ddl file (in /kata-files/lesson2/<platform>/initDb-lesson2.ddl) for an example; this was the file used to deploy the
 existing system in the script above.
 
 While this can work for deploying a brand-new schema, we run into a couple issues when using this for practical
@@ -141,9 +141,17 @@ as indicated by the command.
 %OBEVO_HOME%\bin\deploy.bat NEWREVENG -mode SCHEMA -dbType HSQL -jdbcUrl jdbc:hsqldb:hsql://localhost:9092/obevokata -dbSchema MYLARGESCHEMA -username katadeployer -password katadeploypass -outputPath %KATA_HOME%/reverse-engineering-example
 ```
 
+
 ```
+export CONTAINER_NAME
 # In Linux/Bash
 $OBEVO_HOME/bin/deploy.sh NEWREVENG -mode SCHEMA -dbType HSQL -jdbcUrl jdbc:hsqldb:hsql://localhost:9092/obevokata -dbSchema MYLARGESCHEMA -username katadeployer -password katadeploypass -outputPath $KATA_HOME/reverse-engineering-example
+
+$OBEVO_HOME/bin/deploy.sh NEWREVENG -mode SCHEMA -dbType POSTGRESQL -dbSchema MYLARGESCHEMA -dbHost localhost -dbPort 5432 -outputPath $KATA_HOME/reverse-engineering-example
+
+$OBEVO_HOME/bin/deploy.sh NEWREVENG -mode SCHEMA -dbType POSTGRESQL -dbSchema MYLARGESCHEMA -outputPath $KATA_HOME/reverse-engineering-example -dbHost localhost -dbPort 5432 -dbServer postgres -username postgres -password mysecretpassword
+
+docker exec $CONTAINER_NAME pg_dump -O --disable-dollar-quoting -s -h localhost -p 5432 --username=postgres -d postgres -n MYLARGESCHEMA > /Users/shantstepanian/IdeaProjects/obevo-kata/reverse-engineering-example
 ```
 
 Explaining the arguments in more depth:
@@ -204,6 +212,14 @@ Please replace the existing dev1 configuration with the code snippet below. Of n
 <dbEnvironment name="dev1" cleanBuildAllowed="true"
         jdbcUrl="jdbc:hsqldb:hsql://localhost:9092/obevokata" dbSchemaSuffix="_DEV1">
 </dbEnvironment>
+
+        <dbEnvironment name="dev1" cleanBuildAllowed="true"
+            dbHost="localhost" dbPort="5432" dbSchemaSuffix="_DEV1">
+        </dbEnvironment>
+
+        <dbEnvironment name="dev1" cleanBuildAllowed="true"
+            dbHost="localhost" dbPort="5432" dbSchemaSuffix="_DEV1" dbServer="postgres" />
+
 ```
 
 
