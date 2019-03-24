@@ -1,4 +1,4 @@
-package example.unittest;
+package obevo.lesson.deploy;
 
 import com.gs.obevo.api.appdata.PhysicalSchema;
 import com.gs.obevo.api.factory.Obevo;

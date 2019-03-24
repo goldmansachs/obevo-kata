@@ -13,54 +13,38 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package example.unittest;
+package obevo.lesson.orm;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
 @javax.persistence.Entity
-@Table(name = "AccountType")
-public class AccountType {
+@Table(name = "Country")
+public class Country {
     @Id
-    private int id;
+    @Column(name = "id")
+    private String id;
 
-    @Column(name = "type")
-    private String type;
+    @Column
+    private String name;
 
-    @Column(name = "description")
-    private String description;
-
-    public AccountType() {
+    public Country() {
     }
 
-    public AccountType(int id, String type, String description) {
-        this.id = id;
-        this.type = type;
-        this.description = description;
-    }
-
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public String getType() {
-        return type;
+    public String getName() {
+        return name;
     }
 
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
+    public void setName(String name) {
+        this.name = name;
     }
 }

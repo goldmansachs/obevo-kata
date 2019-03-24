@@ -63,6 +63,9 @@ Let's now try to deploy a schema!
 For each step, you will be making changes in src/main/database to ensure that the corresponding
 unit test passes (e.g. DeployLessonStep1, DeployLessonStep2)
 
+* Note: these test examples show our usage of our DB Metadata API (based on [SchemaCrawler](http://www.schemacrawler.com)) to
+introspect DB metadata. Feel free to ask if you'd like to learn more
+
 Answers are in kata-files/lesson1/step* if you want to compare or need some help.
 
 You can use the scripts in kata-files/kata-step*.sh (or .bat for Windows) if you want to jump to

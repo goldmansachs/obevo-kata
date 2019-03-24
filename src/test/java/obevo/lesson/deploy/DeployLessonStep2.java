@@ -13,7 +13,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package example.unittest;
+package obevo.lesson.deploy;
 
 import com.gs.obevo.dbmetadata.api.DaColumn;
 import com.gs.obevo.dbmetadata.api.DaTable;

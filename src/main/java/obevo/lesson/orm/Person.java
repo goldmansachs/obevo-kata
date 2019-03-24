@@ -13,7 +13,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package example.unittest;
+package obevo.lesson.orm;
 
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
@@ -22,25 +22,23 @@ import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import java.math.BigDecimal;
 
 @javax.persistence.Entity
-@Table(name = "Account")
+@Table(name = "Person")
 @Audited
-public class Account implements java.io.Serializable {
+public class Person implements java.io.Serializable {
     @Id
     private int id;
 
-    @ManyToOne
-    @Audited
-    private Person accountHolder;
+    @Column(name = "firstName")
+    private String firstName;
+
+    @Column(name = "lastName")
+    private String lastName;
 
     @ManyToOne
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    private AccountType accountType;
-
-    @Column
-    private double accountBalance;
+    private Country addressCountry;
 
     public int getId() {
         return id;
@@ -50,27 +48,27 @@ public class Account implements java.io.Serializable {
         this.id = id;
     }
 
-    public Person getAccountHolder() {
-        return accountHolder;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setAccountHolder(Person accountHolder) {
-        this.accountHolder = accountHolder;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
-    public AccountType getAccountType() {
-        return accountType;
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setAccountType(AccountType accountType) {
-        this.accountType = accountType;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
-    public double getAccountBalance() {
-        return accountBalance;
+    public Country getAddressCountry() {
+        return addressCountry;
     }
 
-    public void setAccountBalance(double accountBalance) {
-        this.accountBalance = accountBalance;
+    public void setAddressCountry(Country addressCountry) {
+        this.addressCountry = addressCountry;
     }
 }

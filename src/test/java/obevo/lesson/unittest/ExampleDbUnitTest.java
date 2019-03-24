@@ -13,7 +13,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package example.unittest;
+package obevo.lesson.unittest;
 
 import com.gs.obevo.db.api.appdata.DbEnvironment;
 import com.gs.obevo.db.impl.core.jdbc.JdbcHelper;
@@ -47,7 +47,7 @@ public class ExampleDbUnitTest {
     @Before
     public void setup() {
         DbEnvironment db = new UnitTestDbBuilder()
-                .setSourcePath("./src/main/database")
+                .setSourcePath("./src/main/database/system-config-hsql.xml")
                 .setReferenceEnvName("test")
                 .setDbPlatform(new HsqlDbPlatform())
                 .setDbServer("mytest")

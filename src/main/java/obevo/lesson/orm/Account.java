@@ -13,7 +13,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package example.unittest;
+package obevo.lesson.orm;
 
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
@@ -24,21 +24,22 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @javax.persistence.Entity
-@Table(name = "Person")
+@Table(name = "Account")
 @Audited
-public class Person implements java.io.Serializable {
+public class Account implements java.io.Serializable {
     @Id
     private int id;
 
-    @Column(name = "firstName")
-    private String firstName;
-
-    @Column(name = "lastName")
-    private String lastName;
+    @ManyToOne
+    @Audited
+    private Person accountHolder;
 
     @ManyToOne
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    private Country addressCountry;
+    private AccountType accountType;
+
+    @Column
+    private double accountBalance;
 
     public int getId() {
         return id;
@@ -48,27 +49,27 @@ public class Person implements java.io.Serializable {
         this.id = id;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public Person getAccountHolder() {
+        return accountHolder;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
+    public void setAccountHolder(Person accountHolder) {
+        this.accountHolder = accountHolder;
     }
 
-    public String getLastName() {
-        return lastName;
+    public AccountType getAccountType() {
+        return accountType;
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setAccountType(AccountType accountType) {
+        this.accountType = accountType;
     }
 
-    public Country getAddressCountry() {
-        return addressCountry;
+    public double getAccountBalance() {
+        return accountBalance;
     }
 
-    public void setAddressCountry(Country addressCountry) {
-        this.addressCountry = addressCountry;
+    public void setAccountBalance(double accountBalance) {
+        this.accountBalance = accountBalance;
     }
 }
