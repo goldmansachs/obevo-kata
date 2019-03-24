@@ -111,7 +111,7 @@ Files you should ignore:
 
 Files you will use for the kata:
 * kata-files/setup/: We will setup a local HSQLDB instance for this kata. The binaries and scripts for that are in this folder
-* src/main/database/: Your DB system will be defined in here for the kata. The kata checkout starts with only system-config.xml. You will add more files from...
+* src/main/database/: Your DB systems will be defined in here for the kata (first lesson being in lesson/deploy). The kata checkout starts with only system-config.xml. You will add more files from...
 * kata-files/lesson*/: These folders contain scripts needed during your kata lessons.
 * src/test/java: We show an example here of how to use Obevo in your unit tests.
 * pom.xml: standard pom for your project

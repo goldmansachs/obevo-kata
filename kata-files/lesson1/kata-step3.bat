@@ -17,6 +17,6 @@
 @echo off
 SET CURDIR=%~dp0
 set ROOTDIR=%~dp0\..\..
-rmdir /q /s %ROOTDIR%\src\main\database\DEMO_SCHEMA
-xcopy /S %CURDIR%\step3 %ROOTDIR%\src\main\database
+rmdir /q /s %ROOTDIR%\src\main\database\DEMO_SCHEMA\lesson\deploy
+xcopy /S %CURDIR%\step3 %ROOTDIR%\src\main\database\lesson\deploy
 echo on

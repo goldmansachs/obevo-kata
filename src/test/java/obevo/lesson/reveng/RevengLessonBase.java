@@ -13,7 +13,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package obevo.lesson.deploy;
+package obevo.lesson.reveng;
 
 import com.gs.obevo.api.appdata.PhysicalSchema;
 import com.gs.obevo.api.factory.Obevo;
@@ -27,8 +27,13 @@ import org.apache.commons.dbutils.QueryRunner;
 import org.jetbrains.annotations.NotNull;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class DeployLessonBase {
+import java.io.File;
+
+public class RevengLessonBase {
+    private static final Logger LOG = LoggerFactory.getLogger(RevengLessonBase.class);
     public static final String KATA_PLATFORM = "postgresql";
     public static final boolean EXECUTE_DEPLOY = false;
 
@@ -38,20 +43,31 @@ public class DeployLessonBase {
     private static BasicDataSource ds;
     protected static QueryRunner jdbc;
     protected static DaCatalog dbCatalog;
+    protected static DaCatalog devDbCatalog;
+    private static File sourcePath = new File("./src/main/database/lesson/reveng/final").getAbsoluteFile();
 
     @BeforeClass
     public static void setup() {
+        if (!sourcePath.exists()) {
+            LOG.info("Not setting up DB connections as the reverse-engineered files aren't yet available: " + sourcePath);
+            return;
+        }
         DbDeployerAppContext dbAppContext = getEnv(EXECUTE_DEPLOY);
         DbMetadataManager dbMetadataManager = dbAppContext.getDbMetadataManager();
         ds = getDataSource(dbAppContext);
         jdbc = new QueryRunner(ds);
-        dbCatalog = dbMetadataManager.getDatabase(new PhysicalSchema("DEMO_SCHEMA"), new DaSchemaInfoLevel().setRetrieveTableAndColumnDetails(), true, false);
+        dbCatalog = dbMetadataManager.getDatabase(new PhysicalSchema("MYLARGESCHEMA"), new DaSchemaInfoLevel().setRetrieveTableAndColumnDetails(), true, false);
+        if (dbMetadataManager.getDatabaseOptional(new PhysicalSchema("MYLARGESCHEMA_DEV1")) != null) {
+            devDbCatalog = dbMetadataManager.getDatabase(new PhysicalSchema("MYLARGESCHEMA_DEV1"), new DaSchemaInfoLevel().setRetrieveTableAndColumnDetails(), true, false);
+        }
     }
 
 
     @AfterClass
     public static void teardown() throws Exception {
-        ds.close();
+        if (ds != null) {
+            ds.close();
+        }
     }
 
     @NotNull
@@ -68,7 +84,7 @@ public class DeployLessonBase {
 
     @NotNull
     private static DbDeployerAppContext getEnv(boolean deploy) {
-        DbEnvironment env = Obevo.readEnvironment("./src/main/database/lesson/deploy/system-config-" + KATA_PLATFORM + ".xml", "test");
+        DbEnvironment env = Obevo.readEnvironment(sourcePath.getAbsolutePath(), "prod");
         DbDeployerAppContext dbAppContext = (DbDeployerAppContext) Obevo.buildContext(env, USERNAME, PASSWORD);
         if (deploy) {
             dbAppContext.deploy();

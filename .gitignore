@@ -15,8 +15,8 @@ buildNumber.properties
 
 .idea
 obevo-kata.iml
-src/main/database/DEMO_SCHEMA
+src/main/database/lesson/deploy/DEMO_SCHEMA
+src/main/database/lesson/reveng
+src/main/database/lesson/orm
 nohup.out
 **/nohup.out
-
-reverse-engineering-example

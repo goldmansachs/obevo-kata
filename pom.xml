@@ -98,6 +98,13 @@
         </dependency>
         <dependency>
             <groupId>com.goldmansachs.obevo</groupId>
+            <artifactId>obevo-db</artifactId>
+            <classifier>tests</classifier>
+            <version>${obevo.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.goldmansachs.obevo</groupId>
             <artifactId>obevo-db-postgresql</artifactId>
             <scope>test</scope>
         </dependency>
@@ -151,7 +158,7 @@
                             <env>test</env>
                             <user>${kata.deployUser}</user>
                             <password>${kata.deployPassword}</password>
-                            <sourcePath>${basedir}/src/main/database</sourcePath>
+                            <sourcePath>${basedir}/src/main/database/lesson/deploy</sourcePath>
                             <validateBaseline>true</validateBaseline>
                         </configuration>
                     </execution>
@@ -223,6 +230,7 @@
                 <kata.lesson2Dir>${basedir}/kata-files/lesson2/${kata.platform}</kata.lesson2Dir>
                 <kata.jdbcUrl>jdbc:hsqldb:hsql://localhost:9092/obevokata</kata.jdbcUrl>
                 <!--<kata.jdbcUrl>jdbc:postgresql://localhost:5432/postgres</kata.jdbcUrl>-->
+                <kata.lesson2.outputdir>${basedir}/target/lesson2-reveng</kata.lesson2.outputdir>
             </properties>
 
             <build>
@@ -284,25 +292,25 @@
                                         <echo message="Executing Lesson1 Step1: Initial Deploy" />
                                         <exec executable="${kata.lesson1Dir}/kata-step1.${script.suffix}" failonerror="true" />
                                         <exec executable="${obevo.executable}" failonerror="true">
-                                            <arg line="DEPLOY -cleanFirst ${kata.standardDeployArgs} -sourcePath src/main/database/system-config-${kata.platform}.xml" />
+                                            <arg line="DEPLOY -cleanFirst ${kata.standardDeployArgs} -sourcePath src/main/database/lesson/deploy/system-config-${kata.platform}.xml" />
                                         </exec>
 
                                         <echo message="Executing Lesson1 Step2: Modification Deploy" />
                                         <exec executable="${kata.lesson1Dir}/kata-step2.${script.suffix}" failonerror="true" />
                                         <exec executable="${obevo.executable}" failonerror="true">
-                                            <arg line="DEPLOY ${kata.standardDeployArgs} -sourcePath src/main/database/system-config-${kata.platform}.xml" />
+                                            <arg line="DEPLOY ${kata.standardDeployArgs} -sourcePath src/main/database/lesson/deploy/system-config-${kata.platform}.xml" />
                                         </exec>
 
                                         <echo message="Executing Lesson1 Step3: Modification Deploy" />
                                         <exec executable="${kata.lesson1Dir}/kata-step3.${script.suffix}" failonerror="true" />
                                         <exec executable="${obevo.executable}" failonerror="true">
-                                            <arg line="DEPLOY ${kata.standardDeployArgs} -sourcePath src/main/database/system-config-${kata.platform}.xml" />
+                                            <arg line="DEPLOY ${kata.standardDeployArgs} -sourcePath src/main/database/lesson/deploy/system-config-${kata.platform}.xml" />
                                         </exec>
 
                                         <echo message="Executing Lesson1 Step4: Modification Deploy" />
                                         <exec executable="${kata.lesson1Dir}/kata-step4.${script.suffix}" failonerror="true" />
                                         <exec executable="${obevo.executable}" failonerror="true">
-                                            <arg line="DEPLOY ${kata.standardDeployArgs} -sourcePath src/main/database/system-config-${kata.platform}.xml" />
+                                            <arg line="DEPLOY ${kata.standardDeployArgs} -sourcePath src/main/database/lesson/deploy/system-config-${kata.platform}.xml" />
                                         </exec>
 
                                         <!-- Putting back step 1 to prep for the rest of the test -->
@@ -327,28 +335,28 @@
 
                                         <echo message="Executing Lesson2 Step1: reverse-engineer the DB" />
                                         <exec executable="${obevo.executable}" failonerror="true">
-                                            <arg line="NEWREVENG -mode SCHEMA -dbType ${kata.platform} -jdbcUrl ${kata.jdbcUrl} -dbSchema MYLARGESCHEMA -username ${kata.deployUser} -password ${kata.deployPassword} -outputPath ${basedir}/target/lesson2-reveng" />
+                                            <arg line="NEWREVENG -mode SCHEMA -dbType ${kata.platform} -jdbcUrl ${kata.jdbcUrl} -dbSchema MYLARGESCHEMA -username ${kata.deployUser} -password ${kata.deployPassword} -outputPath ${kata.lesson2.outputdir}" />
                                         </exec>
 
                                         <echo message="Executing Lesson2 Step2: modify the system-config.xml file" />
-                                        <replace file="${basedir}/target/lesson2-reveng/final/system-config.xml" token="dbHost=&quot;myDevHost.me.com&quot; dbPort=&quot;1234&quot; dbServer=&quot;myServer (if applicable)&quot;" value="jdbcUrl=&quot;${kata.jdbcUrl}&quot; dbSchemaSuffix=&quot;_DEV1&quot;" />
+                                        <replace file="${kata.lesson2.outputdir}/final/system-config.xml" token="dbHost=&quot;myDevHost.me.com&quot; dbPort=&quot;1234&quot; dbServer=&quot;myServer (if applicable)&quot;" value="jdbcUrl=&quot;${kata.jdbcUrl}&quot; dbSchemaSuffix=&quot;_DEV1&quot;" />
 
                                         <echo message="Executing Lesson2 Step3: Redeploy the reverse-engineered content to a new dev DB" />
                                         <exec executable="${obevo.executable}" failonerror="true">
-                                            <arg line="DEPLOY ${kata.standardDeployArgs} -sourcePath ${basedir}/target/lesson2-reveng/final -env dev1" />
+                                            <arg line="DEPLOY ${kata.standardDeployArgs} -sourcePath ${kata.lesson2.outputdir}/final -env dev1" />
                                         </exec>
 
                                         <echo message="Executing Lesson2 Step4: Initialize the production schema" />
                                         <exec executable="${obevo.executable}" failonerror="true">
-                                            <arg line="INIT ${kata.standardDeployArgs} -sourcePath ${basedir}/target/lesson2-reveng/final -env prod" />
+                                            <arg line="INIT ${kata.standardDeployArgs} -sourcePath ${kata.lesson2.outputdir}/final -env prod" />
                                         </exec>
 
                                         <echo message="Executing Lesson2 Step5: Verify new migrations still work" />
                                         <exec executable="${obevo.executable}" failonerror="true">
-                                            <arg line="DEPLOY ${kata.standardDeployArgs} -sourcePath ${basedir}/target/lesson2-reveng/final -env dev1" />
+                                            <arg line="DEPLOY ${kata.standardDeployArgs} -sourcePath ${kata.lesson2.outputdir}/final -env dev1" />
                                         </exec>
                                         <exec executable="${obevo.executable}" failonerror="true">
-                                            <arg line="DEPLOY ${kata.standardDeployArgs} -sourcePath ${basedir}/target/lesson2-reveng/final -env prod" />
+                                            <arg line="DEPLOY ${kata.standardDeployArgs} -sourcePath ${kata.lesson2.outputdir}/final -env prod" />
                                         </exec>
 
                                         <echo message="*** Kata Lesson2 Complete ***" />
@@ -425,10 +433,10 @@
                                 <!-- Other SP/sql files to exclude that weren't automatically applied by the mycila plugin originally -->
                                 <exclude>**/*.csv</exclude>
                                 <exclude>**/kata-files/lesson1/**</exclude>
-                                <exclude>**/src/main/database/DEMO_SCHEMA/**</exclude>
+                                <exclude>**/src/main/database/lesson/deploy/DEMO_SCHEMA/**</exclude>
                                 <exclude>**/kata-files/lesson2/**/expected/**</exclude>
                                 <exclude>**/setup/hsql/katadb/**</exclude>
-                                <exclude>**/reverse-engineering-example/**</exclude>
+                                <exclude>**/src/main/database/lesson/reveng/**</exclude>
                             </excludes>
                         </configuration>
                         <executions>

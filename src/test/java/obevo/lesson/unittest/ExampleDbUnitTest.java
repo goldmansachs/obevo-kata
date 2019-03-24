@@ -47,7 +47,7 @@ public class ExampleDbUnitTest {
     @Before
     public void setup() {
         DbEnvironment db = new UnitTestDbBuilder()
-                .setSourcePath("./src/main/database/system-config-hsql.xml")
+                .setSourcePath("./src/main/database/lesson/deploy/system-config-hsql.xml")
                 .setReferenceEnvName("test")
                 .setDbPlatform(new HsqlDbPlatform())
                 .setDbServer("mytest")

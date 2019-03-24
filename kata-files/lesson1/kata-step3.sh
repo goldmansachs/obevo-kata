@@ -17,5 +17,5 @@
 
 CURDIR=`dirname $0`
 ROOTDIR=`dirname $0`/../..
-rm -rf /q /s $ROOTDIR/src/main/database/DEMO_SCHEMA
-cp -rp $CURDIR/step3/* $ROOTDIR/src/main/database
+rm -rf /q /s $ROOTDIR/src/main/database/lesson/deploy/DEMO_SCHEMA
+cp -rp $CURDIR/step3/* $ROOTDIR/src/main/database/lesson/deploy

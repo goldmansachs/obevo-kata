@@ -22,7 +22,7 @@ Pre-requisite: [Setup the kata](kata-setup.md) if you haven't done so already.
 
 ## Overview of Sample Model
 
-For this lesson, we will be working with the database code inside /src/main/database.
+For this lesson, we will be working with the database code inside /src/main/database/lesson/deploy.
 
 We have a simple domain model to deal with - the typical "Bank" example, as described below.
 
@@ -38,7 +38,7 @@ We have a simple domain model to deal with - the typical "Bank" example, as desc
 as a code table.
 
 
-##### What exactly is in the /src/main/database folder?
+##### What exactly is in the /src/main/database/lesson/deploy folder?
 
 The [Obevo project-structure documentation](https://goldmansachs.github.io/obevo/db-project-structure.html)
 explains the code structure in more detail, but we will give a quick introduction here:
@@ -60,7 +60,7 @@ Let's now try to deploy a schema!
 
 ## General Kata Structure for this Lesson
 
-For each step, you will be making changes in src/main/database to ensure that the corresponding
+For each step, you will be making changes in src/main/database/lesson/deploy to ensure that the corresponding
 unit test passes (e.g. DeployLessonStep1, DeployLessonStep2)
 
 * Note: these test examples show our usage of our DB Metadata API (based on [SchemaCrawler](http://www.schemacrawler.com)) to
@@ -84,8 +84,8 @@ Modify DeployLessonBase to specify the platform you will use (postgresql or hsql
 This command executes a deployment:
 
 <table>
-<tr><td>Windows</td><td><pre>%OBEVO_HOME%\bin\deploy.bat DEPLOY -sourcePath %KATA_HOME%/src/main/database -env test</pre></td></tr>
-<tr><td>Linux/Bash</td><td><pre>$OBEVO_HOME/bin/deploy.sh DEPLOY -sourcePath $KATA_HOME/src/main/database -env test</pre></td></tr>
+<tr><td>Windows</td><td><pre>%OBEVO_HOME%\bin\deploy.bat DEPLOY -sourcePath %KATA_HOME%/src/main/database/lesson/deploy -env test</pre></td></tr>
+<tr><td>Linux/Bash</td><td><pre>$OBEVO_HOME/bin/deploy.sh DEPLOY -sourcePath $KATA_HOME/src/main/database/lesson/deploy -env test</pre></td></tr>
 </table>
 
 Argument Description:
@@ -113,8 +113,8 @@ before - that's the point! Reduce the work on your developers and deployers; let
 1) -deployUserId / -password: Let's you specify the login non-interactively
 
 <table>
-<tr><td>Windows</td><td><pre>%OBEVO_HOME%\bin\deploy.bat DEPLOY -sourcePath %KATA_HOME%/src/main/database -env test -deployUserId katadeployer -password katadeploypass</pre></td></tr>
-<tr><td>Linux/Bash</td><td><pre>$OBEVO_HOME/bin/deploy.sh DEPLOY -sourcePath $KATA_HOME/src/main/database -env test -deployUserId katadeployer -password katadeploypass</pre></td></tr>
+<tr><td>Windows</td><td><pre>%OBEVO_HOME%\bin\deploy.bat DEPLOY -sourcePath %KATA_HOME%/src/main/database/lesson/deploy -env test -deployUserId katadeployer -password katadeploypass</pre></td></tr>
+<tr><td>Linux/Bash</td><td><pre>$OBEVO_HOME/bin/deploy.sh DEPLOY -sourcePath $KATA_HOME/src/main/database/lesson/deploy -env test -deployUserId katadeployer -password katadeploypass</pre></td></tr>
 </table>
 
 2) -noPrompt: bypasses all command-line prompts (e.g. hitting "Y" to confirm)
@@ -130,9 +130,9 @@ For more details, see the [Command-line API documentation](https://goldmansachs.
 
 ## Step 2: Basic Schema Modifications
 
-* Step Objectives: Learn how to modify a schema using Obevo by modifying your DB code in /src/main/database
+* Step Objectives: Learn how to modify a schema using Obevo by modifying your DB code in /src/main/database/lesson/deploy
 * Verification Step: Run the tests in DeployLessonStep2.java
-* Answer lookup: your files in /src/main/database should match /kata-files/lesson1/step2
+* Answer lookup: your files in /src/main/database/lesson/deploy should match /kata-files/lesson1/step2
 ---------
 
 Next, let's try to perform some basic modifications on the schema that is typical of many database applications.
