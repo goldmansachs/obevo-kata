@@ -433,9 +433,10 @@
                                 <exclude>**/*.csv</exclude>
                                 <exclude>**/kata-files/lesson1/**</exclude>
                                 <exclude>**/src/main/database/lesson/deploy/DEMO_SCHEMA/**</exclude>
+                                <exclude>**/src/main/database/lesson/reveng/**</exclude>
+                                <exclude>**/src/main/database/lesson/orm/**</exclude>
                                 <exclude>**/kata-files/lesson2/**/expected/**</exclude>
                                 <exclude>**/setup/hsql/katadb/**</exclude>
-                                <exclude>**/src/main/database/lesson/reveng/**</exclude>
                             </excludes>
                         </configuration>
                         <executions>
