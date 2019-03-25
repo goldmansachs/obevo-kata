@@ -41,7 +41,7 @@
 
 
     <properties>
-        <obevo.version>local-SNAPSHOT</obevo.version>
+        <obevo.version>7.1.0</obevo.version>
         <jdk.version>1.8</jdk.version>
 
         <kata.deployUser>katadeployer</kata.deployUser>
@@ -217,8 +217,8 @@
             <id>continuousBuild</id>
 
             <properties>
-                <!--<obevo.download.url>https://github.com/goldmansachs/obevo/releases/download/${obevo.version}/obevo-cli-${obevo.version}-dist.zip</obevo.download.url>-->
-                <obevo.download.url>file:///Users/shantstepanian/IdeaProjects/obevo/obevo-dists/obevo-cli/target/obevo-cli-local-SNAPSHOT-dist.zip</obevo.download.url>
+                <obevo.download.url>https://github.com/goldmansachs/obevo/releases/download/${obevo.version}/obevo-cli-${obevo.version}-dist.zip</obevo.download.url>
+                <!--<obevo.download.url>file:///Users/shantstepanian/IdeaProjects/obevo/obevo-dists/obevo-cli/target/obevo-cli-local-SNAPSHOT-dist.zip</obevo.download.url>-->
                 <obevo.download.dir>${basedir}/target/obevo-download</obevo.download.dir>
                 <obevo.tmp.dir>${basedir}/target/obevo-tmp</obevo.tmp.dir>
                 <obevo.executable>${obevo.download.dir}/bin/deploy.${script.suffix}</obevo.executable>
