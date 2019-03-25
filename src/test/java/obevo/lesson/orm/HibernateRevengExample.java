@@ -19,7 +19,7 @@ import com.gs.obevo.db.impl.platforms.hsql.HsqlDbPlatform;
 import com.gs.obevo.hibernate.HibernateReveng;
 import com.gs.obevo.hibernate.HibernateRevengArgs;
 import com.gs.obevo.hibernate.HibernateRevengFactory;
-import org.hibernate.dialect.PostgreSQL95Dialect;
+import org.hibernate.dialect.HSQLDialect;
 
 import java.io.File;
 import java.util.List;
@@ -33,9 +33,9 @@ public class HibernateRevengExample {
         HibernateReveng<List<? extends Class<?>>> hibReveng = HibernateRevengFactory.getInstance().getHibernate5();
         hibReveng.executeReveng(new HibernateRevengArgs<List<? extends Class<?>>>(
                 "company",
-                new File("./src/main/database/myexample"),
+                new File("./src/main/database/lesson/orm"),
                 new HsqlDbPlatform(),
-                PostgreSQL95Dialect.class,
+                HSQLDialect.class,
                 HibernateTest.getModelClasses()
         ).withGenerateBaseline(true));
     }

@@ -39,7 +39,7 @@ public class HibernateTest {
     @Before
     public void setup() {
         DbDeployerAppContext context = UnitTestDbBuilder.newBuilder()
-                .setSourcePath("./src/main/database/myexample/final")
+                .setSourcePath("./src/main/database/lesson/orm/final")
                 .setReferenceEnvName("dev1")
                 .setDbPlatform(new HsqlDbPlatform())  // you can override the platform in code, or do it in the XML as mentioned in option 1
                 .setDbServer("inMemDbTest")  // setting this value is a shortcut to generate the JDBC url for this environment for you if not already specified
