@@ -15,4 +15,9 @@
 @REM
 
 SET CURDIR=%~dp0
-java -cp %CURDIR%/hsqldb-2.3.4.jar org.hsqldb.server.Server --port 9092 --database.0 file:%CURDIR%\katadb\obevokata --dbname.0 obevokata
+
+SET CONTAINER_NAME=obevo-postgresql-instance
+
+%CURDIR%\shutdownDb.bat
+
+docker run --name %CONTAINER_NAME% -e POSTGRES_DB=postgres -e POSTGRES_USER=katadeployer -e POSTGRES_PASSWORD=katadeploypass -d -p 5432:5432 postgres

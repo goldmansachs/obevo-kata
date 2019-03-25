@@ -14,5 +14,25 @@
 @REM under the License.
 @REM
 
-SET CURDIR=%~dp0
-java -cp %CURDIR%/hsqldb-2.3.4.jar org.hsqldb.util.DatabaseManagerSwing --rcfile %CURDIR%/sqltool.rc  --urlid kata
+SET CONTAINER_NAME=obevo-pgadmin-instance
+
+echo "TODO not tested in Windows"
+
+SET RUNNING_CONTAINER_ID=$(docker ps -aqf "name=$CONTAINER_NAME")
+if [[ ! -z "$RUNNING_CONTAINER_ID" ]]
+then
+    echo "Shutting down old container"
+    docker stop %RUNNING_CONTAINER_ID%
+    docker rm %RUNNING_CONTAINER_ID%
+fi
+
+SET PGADMIN_PORT=8080
+SET PGADMIN_EMAIL="katadeployer@obevo-kata.com"
+SET PGADMIN_PASSWORD="katadeploypass"
+docker run --name %CONTAINER_NAME% -p 8080:80 -e "PGADMIN_DEFAULT_EMAIL=%PGADMIN_EMAIL%" -e "PGADMIN_DEFAULT_PASSWORD=%PGADMIN_PASSWORD%" -d dpage/pgadmin4
+
+echo ""
+echo "pgadmin4 setup successful"
+echo ""
+echo "Please visit http://localhost:8080 w/ username = %PGADMIN_EMAIL% and password as %PGADMIN_PASSWORD% to access the page"
+

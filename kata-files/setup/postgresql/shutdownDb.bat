@@ -15,4 +15,18 @@
 @REM
 
 SET CURDIR=%~dp0
-java -jar %CURDIR%/hsqldb-sqltool-2.3.4.jar --rcFile=%CURDIR%\sqltool.rc --sql "SHUTDOWN;" kata
+
+echo "TODO not tested in Windows"
+
+docker cp %CURDIR%/initDb.ddl %CONTAINER_NAME%:/tmp/initDb.ddl
+docker exec %CONTAINER_NAME% psql -d postgres -U katadeployer -f /tmp/initDb.ddl
+
+SET CONTAINER_NAME=obevo-postgresql-instance
+
+SET RUNNING_CONTAINER_ID=$(docker ps -aqf "name=$CONTAINER_NAME")
+if [[ ! -z "$RUNNING_CONTAINER_ID" ]]
+then
+    echo "Shutting down old container"
+    docker stop %RUNNING_CONTAINER_ID%
+    docker rm %RUNNING_CONTAINER_ID%
+fi

@@ -158,7 +158,7 @@
                             <env>test</env>
                             <user>${kata.deployUser}</user>
                             <password>${kata.deployPassword}</password>
-                            <sourcePath>${basedir}/src/main/database/lesson/deploy</sourcePath>
+                            <sourcePath>${basedir}/src/main/database/lesson/deploy/system-config-hsql.xml</sourcePath>
                             <validateBaseline>true</validateBaseline>
                         </configuration>
                     </execution>
@@ -267,7 +267,6 @@
 
                                         <echo message="Starting DB" />
                                         <exec executable="${kata.setupDir}/startDb.${script.suffix}"
-                                              failonerror="true"
                                               spawn="${forkDbIntAnt}" />
 
                                         <echo message="Initing DB environment with schema infrastructure" />

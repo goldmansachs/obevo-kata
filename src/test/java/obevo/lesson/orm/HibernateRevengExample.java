@@ -36,7 +36,7 @@ public class HibernateRevengExample {
                 new File("./src/main/database/lesson/orm"),
                 new HsqlDbPlatform(),
                 HSQLDialect.class,
-                HibernateTest.getModelClasses()
+                HibernateExample.getModelClasses()
         ).withGenerateBaseline(true));
     }
 }

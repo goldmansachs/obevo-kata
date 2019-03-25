@@ -81,7 +81,7 @@ Run HibernateRevengExample.java to try this out.
 
 We've configured the example to write the generated DDLs to src/main/database/lesson/orm
 
-* You can run HibernateTest.java to try out such a test.
+* You can run HibernateExample.java to try out such a test.
 * Our example Java model is in src/main/java and the obevo.lesson.orm package
 * The sample model is similar in function to the model in Lesson 1
  

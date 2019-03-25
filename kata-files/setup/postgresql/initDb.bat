@@ -15,4 +15,8 @@
 @REM
 
 SET CURDIR=%~dp0
-java -jar %CURDIR%/hsqldb-sqltool-2.3.4.jar --rcFile=%CURDIR%\sqltool.rc kata %CURDIR%\initDb.ddl
+
+SET CONTAINER_NAME=obevo-postgresql-instance
+
+docker cp %CURDIR%/initDb.ddl %CONTAINER_NAME%:/tmp/initDb.ddl
+docker exec %CONTAINER_NAME% psql -d postgres -U katadeployer -f /tmp/initDb.ddl

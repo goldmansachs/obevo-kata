@@ -60,7 +60,8 @@ The scripts will be run at %OBEVO_HOME%\bin (Windows) a.k.a. $OBEVO_HOME/bin (Li
 
 #### Whether to use PostgreSQL or HSQL for the kata
 
-The kata is designed to work with both platforms.
+The kata is designed to work with both platforms. However, while the HSQLDB scripts are tested against each of
+Mac/Linux/Windows, the PostgreSQL is only tested against Mac/Linux.
 
 It was originally written for HSQL only as it did not require any external dependencies (i.e.
 all software is available in the kata codebase and runnable from your machine).

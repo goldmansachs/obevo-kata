@@ -33,7 +33,7 @@ import javax.persistence.criteria.Root;
 import java.util.Arrays;
 import java.util.List;
 
-public class HibernateTest {
+public class HibernateExample {
     private String jdbcUrl;
 
     @Before
