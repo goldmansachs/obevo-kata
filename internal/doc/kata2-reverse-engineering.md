@@ -43,18 +43,13 @@ What do we mean by this? Let's demonstrate with an example.
 
 ## Existing Database System example
 
-We will setup an existing system by running the following script. (Remember to start your HSQLDB instance per the
+We will setup an existing system by running the following script. (Remember to start your DB instance per the
 [kata setup](kata-setup.md) instructions)
 
-```
-@REM In Windows
-%KATA_HOME%\kata-files\lesson2\initDb-lesson2.bat
-```
-
-```
-# In Linux/Bash
-$KATA_HOME/kata-files/lesson2/initDb-lesson2.sh
-```
+<table>
+<tr><td>Windows</td><td><pre>%KATA_HOME%\kata-files\lesson2\%KATA_PLATFORM%\initDb-lesson2.bat</pre></td></tr>
+<tr><td>Linux/Bash</td><td><pre>$KATA_HOME/kata-files/lesson2/$KATA_PLATFORM/initDb-lesson2.sh</pre></td></tr>
+</table>
 
 
 This deploys a system with:
@@ -72,7 +67,7 @@ Given these interdependencies, it is not a trivial task to deploy the schema by 
 individual object and deploying them; the **_order_** in which we deploy objects is also critical.
 
 Many reverse-engineering tools will generate scripts for an entire schema that produces a correct order of the objects;
-see the [initDb-lesson2.ddl](/kata-files/lesson2/initDb-lesson2.ddl) file for an example; this was the file used to deploy the
+see the initDb-lesson2.ddl file (in /kata-files/lesson2/<platform>/initDb-lesson2.ddl) for an example; this was the file used to deploy the
 existing system in the script above.
 
 While this can work for deploying a brand-new schema, we run into a couple issues when using this for practical
@@ -131,22 +126,51 @@ For this Kata Lesson, we will give you a quick synopsis of what to do, using our
 
 
 
-## Step1: Reverse-Engineer the DDLs from the DB to files
+## Step 1: Reverse-Engineer the DDLs from the DB to files
 
-Execute the following command (_it may take a few seconds to run_). This will output the DDLs to %KATA_HOME%\target\lesson2-reveng,
+* Step Objectives: Execute a reverse-engineering operation using the API against a live and large schema
+* Verification Step: Run the tests in RevengLessonStep1.java
+* Pre-requisite: please run the script kata-files/lesson2/$KATA_PLATFORM/initDb-lesson2.sh or .bat to create the schema you will reverse-engineer
+---------
+
+Execute the following command (_it may take anywhere from a few seconds to a minute to run_). This will output the DDLs to $KATA_HOME/src/main/database/lesson/reveng,
 as indicated by the command.
 
-```
-@REM In Windows
-%OBEVO_HOME%\bin\deploy.bat NEWREVENG -mode SCHEMA -dbType HSQL -jdbcUrl jdbc:hsqldb:hsql://localhost:9092/obevokata -dbSchema MYLARGESCHEMA -username katadeployer -password katadeploypass -outputPath %KATA_HOME%/reverse-engineering-example
-```
+#### For HSQL:
+<table>
+<tr><td>Windows</td><td><pre>%OBEVO_HOME%\bin\deploy.bat NEWREVENG -mode SCHEMA -dbType HSQL -jdbcUrl jdbc:hsqldb:hsql://localhost:9092/obevokata -dbSchema MYLARGESCHEMA -username katadeployer -password katadeploypass -outputPath %KATA_HOME%/src/main/database/lesson/reveng</pre></td></tr>
+<tr><td>Linux/Bash</td><td><pre>$OBEVO_HOME/bin/deploy.sh NEWREVENG -mode SCHEMA -dbType HSQL -jdbcUrl jdbc:hsqldb:hsql://localhost:9092/obevokata -dbSchema MYLARGESCHEMA -username katadeployer -password katadeploypass -outputPath $KATA_HOME/src/main/database/lesson/reveng</pre></td></tr>
+</table>
+
+This outputs the files directly to your directory.
+
+#### For PostgreSQL:
+<table>
+<tr><td>Windows</td><td><pre>%OBEVO_HOME%\bin\deploy.bat NEWREVENG -mode SCHEMA -dbType POSTGRESQL -dbHost localhost -dbPort 5432 -dbServer postgres -dbSchema MYLARGESCHEMA -username katadeployer -password katadeploypass -outputPath %KATA_HOME%/src/main/database/lesson/reveng</pre></td></tr>
+<tr><td>Linux/Bash</td><td><pre>$OBEVO_HOME/bin/deploy.sh NEWREVENG -mode SCHEMA -dbType POSTGRESQL -dbHost localhost -dbPort 5432 -dbServer postgres -dbSchema MYLARGESCHEMA -username katadeployer -password katadeploypass -outputPath %KATA_HOME%/src/main/database/lesson/reveng</pre></td></tr>
+</table>
+
+For some tooling, we do not have the full automation ready within Obevo itself due to vagaries around calling other
+tooling.
+
+However, the command above will emit the appropriate pg_dump command to get the output from your PostgreSQL server,
+which you can then feed into the Obevo reverse-engineering tool.
+
+The commands will look something like below (but do not use this text for your kata; use the output from Obevo's tool):
 
 ```
-# In Linux/Bash
-$OBEVO_HOME/bin/deploy.sh NEWREVENG -mode SCHEMA -dbType HSQL -jdbcUrl jdbc:hsqldb:hsql://localhost:9092/obevokata -dbSchema MYLARGESCHEMA -username katadeployer -password katadeploypass -outputPath $KATA_HOME/reverse-engineering-example
+# enter your container name - for the kata use case, it is obevo-postgresql-instance 
+CONTAINER_NAME=obevo-postgresql-instance
+docker exec $CONTAINER_NAME pg_dump -O -s -h localhost -p 5432 --username=katadeployer -d postgres -n MYLARGESCHEMA > /yourFolder/obevo-kata/src/main/database/lesson/reveng/interim/revengoutput.txt
+
+# now append the -inputPath argument at the end, as the Obevo command indicates:
+$OBEVO_HOME/bin/deploy.sh NEWREVENG -mode SCHEMA -dbType POSTGRESQL -dbHost localhost -dbPort 5432 -dbServer postgres -dbSchema MYLARGESCHEMA -username katadeployer -password katadeploypass -outputPath %KATA_HOME%/src/main/database/lesson/reveng -inputPath %KATA_HOME%/src/main/database/lesson/reveng/interim
 ```
 
-Explaining the arguments in more depth:
+For more details on how reverse-engineering is handled for other DBMS platforms, see the [DBMS-specific reverse engineering tools](https://goldmansachs.github.io/obevo/reverse-engineer-dbmstools.html)
+doc.
+
+#### Explaining the arguments in more depth:
 * -mode &lt;SCHEMA or DATA&gt;: Indicates whether we reverse-engineer the schema DDLs or data rows from the tables. For this kata, we will only cover the SCHEMA mode
 * -dbType &lt;dbtype&gt;: The DB type to connect to. Supports values ORACLE, MSSQL, DB2, SYBASE_ASE, POSTGRESQL, HSQL
 * -jdbcUrl &lt;jdbc:yourUrl&gt;: The URL to connect to
@@ -157,9 +181,12 @@ Explaining the arguments in more depth:
 
 #### What is in the output directory
 
-1) /interim: This directory contains the output generated from the raw HSQLDB reverse-engineering command.
+1) /interim: This directory contains the output generated from the reverse-engineering command.
 
 Obevo will use this interim file as the input to the next step to generate the Obevo directory structure.
+
+* For HSQL, Obevo's NEWREVENG command populates this on its own
+* For PostgreSQL, the pg_dump command will populate it, as mentioned above
 
 These interim files are kept as it is possible to edit the interim files and rerun the reverse-engineering from that
 point if needed; see the next section for details.
@@ -167,25 +194,12 @@ point if needed; see the next section for details.
 2) /final: Contains the reverse-engineered project. Includes a sample system-config.xml based on the provided input.
 
 
-#### Two-step reverse-engineering for certain DBMS types using the /interim directory
-
-(This section is not applicable for this kata; it is informational for you in case you apply this to your real project).
-
-For HSQLDB, we were able to reverse-engineer the product using a single command to Obevo, as Obevo was able to invoke
-the HSQLDB reverse-engineering APIs directly. We can do the same for Oracle
-
-However, the other DBMS types supported by Obevo do not have a Java API for reverse-engineering, but a command line API
-instead. As those APIs have slightly more complexity to invoke (e.g. due to such requirements as setting environment
-variables beforehand), we will not invoke them directly in Obevo.
-
-Instead, the Obevo reverse-engineering command will print out instructions for what you should do to invoke the next
-step of reverse-engieering. For example, PostgreSQL requires the pg_dump command and DB2 the db2look command.
-
-For more details, see the [DBMS-specific reverse engineering tools](https://goldmansachs.github.io/obevo/reverse-engineer-dbmstools.html)
-page.
-
 
 ## Step 2: Update system-config.xml to point to a new dev schema
+
+* Step Objectives: Become familiar with the idea around creating a new dev environment
+* Verification Step: None; we will verify in the next step
+---------
 
 The reverse-engineering generates a system-config.xml file with two environments defined.
 
@@ -200,34 +214,42 @@ Please replace the existing dev1 configuration with the code snippet below. Of n
 * We will allow clean builds (i.e. to wipe away the schema) in dev, but not prod
 * We use the dbSchemaSuffix parameter to create the schema for our environment as MYLARGESCHEMA_DEV1
 
-```
-<dbEnvironment name="dev1" cleanBuildAllowed="true"
-        jdbcUrl="jdbc:hsqldb:hsql://localhost:9092/obevokata" dbSchemaSuffix="_DEV1">
-</dbEnvironment>
-```
+<table>
+<tr><td>For HSQL:</td><td><pre><dbEnvironment name="dev1" cleanBuildAllowed="true"
+    jdbcUrl="jdbc:hsqldb:hsql://localhost:9092/obevokata" dbSchemaSuffix="_DEV1" /></pre></td></tr>
+<tr><td>For PostgreSQL:</td><td><pre><dbEnvironment name="dev1" cleanBuildAllowed="true"
+    dbHost="localhost" dbPort="5432" dbServer="postgres" dbSchemaSuffix="_DEV1" /></pre></td></tr>
+</table>
 
 
 ## Step 3: Verify the DDLs are correct by executing a deploy against the dev environment
 
+* Step Objectives: Deploy a new dev database from your prod DB code
+* Verification Step: Run the tests in RevengLessonStep3.java
+---------
+
 Use the commands below, which will deploy the dev1 environment that you setup from the reverse-engineered output.
 
-Note that Obevo will automatically create schemas in HSQLDB (MYLARGESCHEMA_DEV1 for our environment's case).
+Note the -forceEnvSetup argument - what is it for? Let's dive in:
 
-```
-@REM In Windows
-%OBEVO_HOME%\bin\deploy.bat DEPLOY -sourcePath %KATA_HOME%/reverse-engineering-example/final -env dev1 -deployUserId katadeployer -password katadeploypass
-```
+* We've specified a schema MYLARGESCHEMA_DEV1 - who will create it?
+* In production, you may want further control on the database schemas that you create and do it separately from Obevo.
+* However, Obevo can setup simple schemas for some DBMS types (including HSQLDB and PostgreSQL).
+* This functionality is enabled with -forceEnvSetup, which will create schemas, groups, and users defined in system-config.xml
 
-```
-# In Linux/Bash
-$OBEVO_HOME/bin/deploy.sh DEPLOY -sourcePath $KATA_HOME/reverse-engineering-example/final -env dev1 -deployUserId katadeployer -password katadeploypass
-```
-
+<table>
+<tr><td>Windows</td><td><pre>%OBEVO_HOME%\bin\deploy.bat DEPLOY -sourcePath %KATA_HOME%/src/main/database/lesson/reveng/final -env dev1 -deployUserId katadeployer -password katadeploypass -forceEnvSetup</pre></td></tr>
+<tr><td>Linux/Bash</td><td><pre>$OBEVO_HOME/bin/deploy.sh DEPLOY -sourcePath $KATA_HOME/src/main/database/lesson/reveng/final -env dev1 -deployUserId katadeployer -password katadeploypass -forceEnvSetup</pre></td></tr>
+</table>
 
 The deployment should succeed. As a result, we know that the DDLs are valid and can be deployed to any new environment,
 which will prove useful for testing and development purposes.
 
+## Step 4: Initialize the production environment 
 
+* Step Objectives: Initialize your production schema to ensure that you can deploy changes to it again
+* Verification Step: Run the tests in RevengLessonStep4.java
+---------
 
 However, there is one more step left. While we can deploy these DDLs to a new dev environment, we would not want to
 re-execute them against our production schema, as the DDLs already exist there.
@@ -235,25 +257,13 @@ re-execute them against our production schema, as the DDLs already exist there.
 To check this, run the PREVIEW command; this will show you what objects still need to be deployed to the environment.
 Ideally, this would be a no-op against production, but Obevo will still show that a new schema needs deployment.
 
-```
-@REM In Windows
-%OBEVO_HOME%\bin\deploy.bat PREVIEW -sourcePath %KATA_HOME%/reverse-engineering-example/final -env prod -deployUserId katadeployer -password katadeploypass
-```
-
-```
-# In Linux/Bash
-$OBEVO_HOME/bin/deploy.sh PREVIEW -sourcePath $KATA_HOME/reverse-engineering-example/final -env prod -deployUserId katadeployer -password katadeploypass
-```
-
+    <table>
+    <tr><td>Windows</td><td><pre>%OBEVO_HOME%\bin\deploy.bat PREVIEW -sourcePath %KATA_HOME%/src/main/database/lesson/reveng/final -env prod -deployUserId katadeployer -password katadeploypass</pre></td></tr>
+    <tr><td>Linux/Bash</td><td><pre>$OBEVO_HOME/bin/deploy.sh PREVIEW -sourcePath $KATA_HOME/src/main/database/lesson/reveng/final -env prod -deployUserId katadeployer -password katadeploypass</pre></td></tr>
+    </table>
 
 To fix this, we need to initialize the schema, i.e. to tell Obevo that this schema has already been deployed, which we
-will do next.
-
-
-(For reference, you can see the expected file output in kata-files/lesson2/expected)
-
-
-## Step 4: Run INIT against the production environment
+will do next. (For reference, you can see the expected file output in kata-files/lesson2/$KATA_PLATFORM/expected)
 
 The INIT command will perform a deployment that populates the [Deploy Audit Log](https://goldmansachs.github.io/obevo/design-walkthrough.html#Deployment_Algorithm)
 tables in the environments, but not the actual SQLs defined in your DDLs.
@@ -261,53 +271,59 @@ tables in the environments, but not the actual SQLs defined in your DDLs.
 The command arguments are the same as for the DEPLOY and PREVIEW commands, except that we specify INIT as the first
 argument.
 
-```
-@REM In Windows
-%OBEVO_HOME%\bin\deploy.bat INIT -sourcePath %KATA_HOME%/reverse-engineering-example/final -env prod -deployUserId katadeployer -password katadeploypass
-```
-
-```
-# In Linux/Bash
-$OBEVO_HOME/bin/deploy.sh INIT -sourcePath $KATA_HOME/reverse-engineering-example/final -env prod -deployUserId katadeployer -password katadeploypass
-```
+<table>
+<tr><td>Windows</td><td><pre>%OBEVO_HOME%\bin\deploy.bat INIT -sourcePath %KATA_HOME%/src/main/database/lesson/reveng/final -env prod -deployUserId katadeployer -password katadeploypass</pre></td></tr>
+<tr><td>Linux/Bash</td><td><pre>$OBEVO_HOME/bin/deploy.sh INIT -sourcePath $KATA_HOME/src/main/database/lesson/reveng/final -env prod -deployUserId katadeployer -password katadeploypass</pre></td></tr>
+</table>
 
 
 Once that completes, try a regular deploy against the "prod" environment and verify that it is a no-op
-```
-@REM In Windows
-%OBEVO_HOME%\bin\deploy.bat DEPLOY -sourcePath %KATA_HOME%/reverse-engineering-example/final -env prod -deployUserId katadeployer -password katadeploypass
-```
-
-```
-# In Linux/Bash
-$OBEVO_HOME/bin/deploy.sh DEPLOY -sourcePath $KATA_HOME/reverse-engineering-example/final -env prod -deployUserId katadeployer -password katadeploypass
-```
+<table>
+<tr><td>Windows</td><td><pre>%OBEVO_HOME%\bin\deploy.bat DEPLOY -sourcePath %KATA_HOME%/src/main/database/lesson/reveng/final -env prod -deployUserId katadeployer -password katadeploypass</pre></td></tr>
+<tr><td>Linux/Bash</td><td><pre>$OBEVO_HOME/bin/deploy.sh DEPLOY -sourcePath $KATA_HOME/src/main/database/lesson/reveng/final -env prod -deployUserId katadeployer -password katadeploypass</pre></td></tr>
+</table>
 
 
 ## Step 5: Test that subsequent incremental changes work
 
+* Step Objectives: Deploy a new incremental change against your production database.
+* Verification Step: Run the tests in RevengLessonStep5.java
+---------
+
 Lastly, let's prove to ourselves that we can still do subsequent migrations.
 
-Change the content of one of the views in your codebase. Then rerun the deployments against prod and dev1. You will see
+Change the content of a couple objects as follows:
+
+1) In table0.sql
+    ```
+    //// CHANGE name=change2
+    ALTER TABLE table0 ADD COLUMN newcol integer
+    GO
+    ```
+
+2) In view0.sql - change "select 1" to "select 2"
+    ```
+    CREATE VIEW view0 AS
+     SELECT 2 AS c1
+     ...
+    ```
+
+Then rerun the deployments against prod and dev1. You will see
 that with the same input code base, we can deploy to a brand new schema _and_ incrementally to a production schema.
 
-```
-@REM In Windows
-REM first, clean dev1
-%OBEVO_HOME%\bin\deploy.bat DEPLOY -action clean -sourcePath %KATA_HOME%/reverse-engineering-example/final -env dev1 -deployUserId katadeployer -password katadeploypass
+<table>
+<tr><td>Windows</td><td><pre>REM first, clean dev1
+%OBEVO_HOME%\bin\deploy.bat DEPLOY -action clean -sourcePath %KATA_HOME%/src/main/database/lesson/reveng/final -env dev1 -deployUserId katadeployer -password katadeploypass
 REM then re-deploy both dev1 and prod to compare
-%OBEVO_HOME%\bin\deploy.bat DEPLOY -sourcePath %KATA_HOME%/reverse-engineering-example/final -env dev1 -deployUserId katadeployer -password katadeploypass
-%OBEVO_HOME%\bin\deploy.bat DEPLOY -sourcePath %KATA_HOME%/reverse-engineering-example/final -env prod -deployUserId katadeployer -password katadeploypass
-```
-
-```
-# In Linux/Bash
-# first, clean dev1
-$OBEVO_HOME/bin/deploy.sh DEPLOY -action clean -sourcePath $KATA_HOME/reverse-engineering-example/final -env dev1 -deployUserId katadeployer -password katadeploypass
+%OBEVO_HOME%\bin\deploy.bat DEPLOY -sourcePath %KATA_HOME%/src/main/database/lesson/reveng/final -env dev1 -deployUserId katadeployer -password katadeploypass
+%OBEVO_HOME%\bin\deploy.bat DEPLOY -sourcePath %KATA_HOME%/src/main/database/lesson/reveng/final -env prod -deployUserId katadeployer -password katadeploypass</pre></td></tr>
+<tr><td>Linux/Bash</td><td><pre># first, clean dev1
+$OBEVO_HOME/bin/deploy.sh DEPLOY -action clean -sourcePath $KATA_HOME/src/main/database/lesson/reveng/final -env dev1 -deployUserId katadeployer -password katadeploypass
 # then re-deploy both dev1 and prod to compare
-$OBEVO_HOME/bin/deploy.sh DEPLOY -sourcePath $KATA_HOME/reverse-engineering-example/final -env dev1 -deployUserId katadeployer -password katadeploypass
-$OBEVO_HOME/bin/deploy.sh DEPLOY -sourcePath $KATA_HOME/reverse-engineering-example/final -env prod -deployUserId katadeployer -password katadeploypass
-```
+$OBEVO_HOME/bin/deploy.sh DEPLOY -sourcePath $KATA_HOME/src/main/database/lesson/reveng/final -env dev1 -deployUserId katadeployer -password katadeploypass
+$OBEVO_HOME/bin/deploy.sh DEPLOY -sourcePath $KATA_HOME/src/main/database/lesson/reveng/final -env prod -deployUserId katadeployer -password katadeploypass</pre></td></tr>
+</table>
+
 
 
 
