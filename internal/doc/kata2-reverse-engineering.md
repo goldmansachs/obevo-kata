@@ -43,7 +43,7 @@ What do we mean by this? Let's demonstrate with an example.
 
 ## Existing Database System example
 
-We will setup an existing system by running the following script. (Remember to start your HSQLDB instance per the
+We will setup an existing system by running the following script. (Remember to start your DB instance per the
 [kata setup](kata-setup.md) instructions)
 
 <table>
