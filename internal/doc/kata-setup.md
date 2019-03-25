@@ -214,10 +214,10 @@ In the UI, right-click the Servers button to create a new server. Go to the Conn
   * you won't be able to specify localhost as pgadmin and your Postgres instance are each running from
 Docker containers
     * (unless you leverage more advanced Docker features, which we will leave out-of-scope for this kata. You are free to go that route if you are proficient with Docker)
-  * To get the IP, run the getPostgrepIpForDbviewer script:
+  * To get the IP, run the getIpForDbviewer script:
     <table>
-    <tr><td>Windows</td><td><pre>%KATA_HOME%\kata-files\setup\%KATA_PLATFORM%\getPostgrepIpForDbviewer.bat</pre></td></tr>
-    <tr><td>Linux/Bash</td><td><pre>$KATA_HOME/kata-files/setup/$KATA_PLATFORM/getPostgrepIpForDbviewer.sh</pre></td></tr>
+    <tr><td>Windows</td><td><pre>%KATA_HOME%\kata-files\setup\%KATA_PLATFORM%\getIpForDbviewer.bat</pre></td></tr>
+    <tr><td>Linux/Bash</td><td><pre>$KATA_HOME/kata-files/setup/$KATA_PLATFORM/getIpForDbviewer.sh</pre></td></tr>
     </table>
 * Port value: 5432
 * Maintenance database: postgres
