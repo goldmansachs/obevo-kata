@@ -84,8 +84,8 @@ Modify DeployLessonBase to specify the platform you will use (postgresql or hsql
 This command executes a deployment:
 
 <table>
-<tr><td>Windows</td><td><pre>%OBEVO_HOME%\bin\deploy.bat DEPLOY -sourcePath %KATA_HOME%/src/main/database/lesson/deploy -env test</pre></td></tr>
-<tr><td>Linux/Bash</td><td><pre>$OBEVO_HOME/bin/deploy.sh DEPLOY -sourcePath $KATA_HOME/src/main/database/lesson/deploy -env test</pre></td></tr>
+<tr><td>Windows</td><td><pre>%OBEVO_HOME%\bin\deploy.bat DEPLOY -sourcePath %KATA_HOME%/src/main/database/lesson/deploy/system-config-%KATA_PLATFORM%.xml -env test</pre></td></tr>
+<tr><td>Linux/Bash</td><td><pre>$OBEVO_HOME/bin/deploy.sh DEPLOY -sourcePath $KATA_HOME/src/main/database/lesson/deploy/system-config-$KATA_PLATFORM.xml -env test</pre></td></tr>
 </table>
 
 Argument Description:
@@ -113,8 +113,8 @@ before - that's the point! Reduce the work on your developers and deployers; let
 1) -deployUserId / -password: Let's you specify the login non-interactively
 
 <table>
-<tr><td>Windows</td><td><pre>%OBEVO_HOME%\bin\deploy.bat DEPLOY -sourcePath %KATA_HOME%/src/main/database/lesson/deploy -env test -deployUserId katadeployer -password katadeploypass</pre></td></tr>
-<tr><td>Linux/Bash</td><td><pre>$OBEVO_HOME/bin/deploy.sh DEPLOY -sourcePath $KATA_HOME/src/main/database/lesson/deploy -env test -deployUserId katadeployer -password katadeploypass</pre></td></tr>
+<tr><td>Windows</td><td><pre>%OBEVO_HOME%\bin\deploy.bat DEPLOY -sourcePath %KATA_HOME%/src/main/database/lesson/deploy/system-config-%KATA_PLATFORM%.xml -env test -deployUserId katadeployer -password katadeploypass</pre></td></tr>
+<tr><td>Linux/Bash</td><td><pre>$OBEVO_HOME/bin/deploy.sh DEPLOY -sourcePath $KATA_HOME/src/main/database/lesson/deploy/system-config-$KATA_PLATFORM.xml -env test -deployUserId katadeployer -password katadeploypass</pre></td></tr>
 </table>
 
 2) -noPrompt: bypasses all command-line prompts (e.g. hitting "Y" to confirm)

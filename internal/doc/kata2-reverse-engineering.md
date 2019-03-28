@@ -147,7 +147,7 @@ This outputs the files directly to your directory.
 #### For PostgreSQL:
 <table>
 <tr><td>Windows</td><td><pre>%OBEVO_HOME%\bin\deploy.bat NEWREVENG -mode SCHEMA -dbType POSTGRESQL -dbHost localhost -dbPort 5432 -dbServer postgres -dbSchema MYLARGESCHEMA -username katadeployer -password katadeploypass -outputPath %KATA_HOME%/src/main/database/lesson/reveng</pre></td></tr>
-<tr><td>Linux/Bash</td><td><pre>$OBEVO_HOME/bin/deploy.sh NEWREVENG -mode SCHEMA -dbType POSTGRESQL -dbHost localhost -dbPort 5432 -dbServer postgres -dbSchema MYLARGESCHEMA -username katadeployer -password katadeploypass -outputPath %KATA_HOME%/src/main/database/lesson/reveng</pre></td></tr>
+<tr><td>Linux/Bash</td><td><pre>$OBEVO_HOME/bin/deploy.sh NEWREVENG -mode SCHEMA -dbType POSTGRESQL -dbHost localhost -dbPort 5432 -dbServer postgres -dbSchema MYLARGESCHEMA -username katadeployer -password katadeploypass -outputPath $KATA_HOME/src/main/database/lesson/reveng</pre></td></tr>
 </table>
 
 For some tooling, we do not have the full automation ready within Obevo itself due to vagaries around calling other
@@ -164,7 +164,7 @@ CONTAINER_NAME=obevo-postgresql-instance
 docker exec $CONTAINER_NAME pg_dump -O -s -h localhost -p 5432 --username=katadeployer -d postgres -n MYLARGESCHEMA > /yourFolder/obevo-kata/src/main/database/lesson/reveng/interim/revengoutput.txt
 
 # now append the -inputPath argument at the end, as the Obevo command indicates:
-$OBEVO_HOME/bin/deploy.sh NEWREVENG -mode SCHEMA -dbType POSTGRESQL -dbHost localhost -dbPort 5432 -dbServer postgres -dbSchema MYLARGESCHEMA -username katadeployer -password katadeploypass -outputPath %KATA_HOME%/src/main/database/lesson/reveng -inputPath %KATA_HOME%/src/main/database/lesson/reveng/interim
+$OBEVO_HOME/bin/deploy.sh NEWREVENG -mode SCHEMA -dbType POSTGRESQL -dbHost localhost -dbPort 5432 -dbServer postgres -dbSchema MYLARGESCHEMA -username katadeployer -password katadeploypass -outputPath $KATA_HOME/src/main/database/lesson/reveng -inputPath $KATA_HOME/src/main/database/lesson/reveng/interim
 ```
 
 For more details on how reverse-engineering is handled for other DBMS platforms, see the [DBMS-specific reverse engineering tools](https://goldmansachs.github.io/obevo/reverse-engineer-dbmstools.html)
