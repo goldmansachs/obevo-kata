@@ -4,8 +4,8 @@ jdk: openjdk8
 before_install:
   - export MAVEN_OPTS="-Dmaven.repo.local=$HOME/.m2/repository -Xmx2g -Dorg.slf4j.simpleLogger.showDateTime=true -Dorg.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss:SSS"
 
-install:
-  -
+# skip install step
+install: true
 
 # Getting an unexpected exception during the test run; will bypass for now
 script: mvn -P continuousBuild,linuxBuild clean test-compile
