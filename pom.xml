@@ -98,7 +98,7 @@
         </dependency>
         <dependency>
             <groupId>com.goldmansachs.obevo</groupId>
-            <artifactId>obevo-db</artifactId>
+            <artifactId>obevo-core</artifactId>
             <classifier>tests</classifier>
             <version>${obevo.version}</version>
             <scope>test</scope>
