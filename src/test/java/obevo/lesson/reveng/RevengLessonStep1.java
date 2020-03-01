@@ -15,7 +15,7 @@
  */
 package obevo.lesson.reveng;
 
-import com.gs.obevo.db.testutil.DirectoryAssert;
+import com.gs.obevo.testutil.DirectoryAssert;
 import org.junit.Test;
 
 import java.io.File;

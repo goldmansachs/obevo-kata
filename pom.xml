@@ -41,7 +41,7 @@
 
 
     <properties>
-        <obevo.version>7.1.0</obevo.version>
+        <obevo.version>8.0.0</obevo.version>
         <jdk.version>1.8</jdk.version>
 
         <kata.deployUser>katadeployer</kata.deployUser>
@@ -98,7 +98,7 @@
         </dependency>
         <dependency>
             <groupId>com.goldmansachs.obevo</groupId>
-            <artifactId>obevo-db</artifactId>
+            <artifactId>obevo-core</artifactId>
             <classifier>tests</classifier>
             <version>${obevo.version}</version>
             <scope>test</scope>
