@@ -8,4 +8,4 @@ install:
   -
 
 # Getting an unexpected exception during the test run; will bypass for now
-script: mvn -P linuxBuild clean test-compile
+script: mvn -P linuxBuild,continuousBuild clean test-compile
